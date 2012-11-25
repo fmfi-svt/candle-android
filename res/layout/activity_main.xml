@@ -3,12 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
+
+    <EditText
+        android:id="@+id/editText1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/hello_world"
-        tools:context=".MainActivity" />
+        android:layout_marginBottom="500dp"
+        android:ems="10"
+        android:maxLength="5" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/printCandle"
+        android:layout_width="wrap_content"
+        android:layout_height="500dp"
+        android:maxLines="30"
+        android:layout_marginTop="100dp"
+        android:scrollbars="vertical" />
+
+    <Button
+        android:id="@+id/buttonSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="Search" />
 
 </RelativeLayout>
