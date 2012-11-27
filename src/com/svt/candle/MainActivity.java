@@ -21,7 +21,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	TextView printTimeTable = null;
 	Button search = null;
-	DataStorage timeTable = null;
+	DataStorage dataStorage = null;
 	// prednastavený rozvrh
 	String nickUrl = "2i2";
 	EditText getNick = null;
@@ -69,9 +69,9 @@ public class MainActivity extends Activity {
 	public void createTimeTable() {
 		try {
 			if (amIConnectedToWifi()) {
-				timeTable = new DataStorageInternet(nickUrl);
+				dataStorage = new DataStorageInternet(nickUrl);
 			} else {
-				timeTable = new DataStorageSolid();
+				dataStorage = new DataStorageSolid();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -80,8 +80,8 @@ public class MainActivity extends Activity {
 	}
 
 	public void printTimeTable() {
-		if (timeTable != null) {
-			printTimeTable.setText(timeTableToString(timeTable));
+		if (dataStorage != null) {
+			printTimeTable.setText(timeTableToString(dataStorage));
 		}
 	}
 	/**
@@ -121,10 +121,24 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				if (amIConnectedToWifi()) {
 					try {
-						getNick = (EditText) findViewById(R.id.editText1);
+						getNick = (EditText) findViewById(R.id.editTextSearch);
 						nickUrl = getNick.getText().toString();
 						createTimeTable();
-						printTimeTable();
+						
+						if(dataStorage.getTimeTable() != null){
+							if(!dataStorage.getTimeTable().isEmpty()){
+								printTimeTable();
+							} else{
+								final Toast toast = Toast.makeText(getApplicationContext(),
+										"Timetable is empty!", Toast.LENGTH_SHORT);
+								toast.show();
+							}
+						} else {
+							final Toast toast = Toast.makeText(getApplicationContext(),
+									"Timetable does not exist!", Toast.LENGTH_SHORT);
+							toast.show();
+						}
+						
 					} catch (Exception e) {
 						Log.w("Debug", e.getMessage());
 					}

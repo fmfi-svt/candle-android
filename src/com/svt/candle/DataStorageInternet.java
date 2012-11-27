@@ -8,7 +8,7 @@ import android.util.Log;
  */
 
 public class DataStorageInternet implements DataStorage {
-	private TimeTable timeTable;
+	private TimeTable timeTable = null;
 	private String dataFromDSI = null;
 	
 	/**
@@ -30,11 +30,15 @@ public class DataStorageInternet implements DataStorage {
 	public DataStorageInternet(String nickUrl) throws Exception{
 		
 		try {
-			ThreadInternet ti = new ThreadInternet(nickUrl);
-			ti.run();
-			dataFromDSI = ti.getDataFromInternet();
-			dataFromDSI = deleteBlankChar(dataFromDSI);
-			timeTable = new TimeTable(new Scanner(dataFromDSI));
+			ThreadInternet threadInternet = new ThreadInternet(nickUrl);
+			threadInternet.run();
+			dataFromDSI = threadInternet.getDataFromInternet();
+			if(dataFromDSI.equals("-1")){
+				timeTable = null;
+			} else {
+				dataFromDSI = deleteBlankChar(dataFromDSI);
+				timeTable = new TimeTable(new Scanner(dataFromDSI));
+			}
 		} catch (Exception e) {
 			Log.w("Debug", e.getMessage());
 			Log.w("Debug", "Connection crashed in DataStorageInternet.");

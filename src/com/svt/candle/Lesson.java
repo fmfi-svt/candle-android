@@ -10,13 +10,13 @@ import android.util.Log;
 
 public class Lesson {
 
-	String day= "";
-	String from= "";
-	String to= "";
-	Integer duration= 0;
-	String room= "";
-	String typeOfSubject= "";
-	String subjectName= "";
+	String day = "";
+	String from = "";
+	String to = "";
+	Integer duration =0;
+	String room = "";
+	String typeOfSubject = "";
+	String subjectName = "";
 	String teachers = "";
 
 	public Lesson(String source)
@@ -64,7 +64,6 @@ public class Lesson {
 				room = scan.next();
 			}
 			
-			
 			String pom;
 			if(scan.hasNext()){
 				typeOfSubject = scan.next();
@@ -72,7 +71,6 @@ public class Lesson {
 			
 			while (scan.hasNext()) {
 				pom = scan.next();
-				Log.w("Debug","day");
 				if (Character.isUpperCase(pom.charAt(0))) {
 					subjectName = pom;
 					break;

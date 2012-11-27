@@ -114,8 +114,8 @@ public class ThreadInternet extends Thread {
 			text = readIt(is, 2000);
 
 		} catch (Exception e) {
-			e.printStackTrace();
 			Log.w("Debug", e.getMessage());
+			text = Integer.toString(-1);
 		}
 
 	}

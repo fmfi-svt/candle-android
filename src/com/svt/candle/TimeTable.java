@@ -25,4 +25,11 @@ public class TimeTable {
 			scan.close();
 		}
 	}
+	public Boolean isEmpty() {
+		if(this.timeTable.size() == 0){
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
