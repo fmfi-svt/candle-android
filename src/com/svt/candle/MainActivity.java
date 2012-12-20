@@ -27,9 +27,9 @@ public class MainActivity extends Activity {
 	EditText getNick = null;
 
 	/**
-	 * Control wifi connection.
+	 * Control internet connection.
 	 */
-	public Boolean amIConnectedToWifi() {
+	public Boolean amIConnectedToInternet() {
 		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 		return (networkInfo != null && networkInfo.isConnected());
@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
 	 */
 	public void createTimeTable() {
 		try {
-			if (amIConnectedToWifi()) {
+			if (amIConnectedToInternet()) {
 				dataStorage = new DataStorageInternet(nickUrl);
 			} else {
 				dataStorage = new DataStorageSolid();
@@ -119,7 +119,7 @@ public class MainActivity extends Activity {
 		search = (Button) findViewById(R.id.buttonSearch);
 		search.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (amIConnectedToWifi()) {
+				if (amIConnectedToInternet()) {
 					try {
 						getNick = (EditText) findViewById(R.id.editTextSearch);
 						nickUrl = getNick.getText().toString();
@@ -144,7 +144,7 @@ public class MainActivity extends Activity {
 					}
 				} else {
 					final Toast toast = Toast.makeText(getApplicationContext(),
-							"You have not wifi connection", Toast.LENGTH_SHORT);
+							"You have not internet access", Toast.LENGTH_SHORT);
 					toast.show();
 				}
 			}

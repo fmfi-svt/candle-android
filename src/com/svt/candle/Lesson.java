@@ -4,8 +4,10 @@ import java.util.Scanner;
 import android.util.Log;
 
 /**
+ * POUZIVANA NA PARSOVANIE TXT V PRVYCH VERZIACH
  * Trieda reprezentujúca jednu vyučovaciu časť, v rozvrhu zobrazované ako jedno
  * okienko, volaná zvyčajne konštruktorom triedy TimeTable.
+ * Očakávaný tvar riadku: Po 10:40 - 12:10 (2 v.hod.) M-VII Prednáška Algoritmy a dátové štruktúry M. Forišek 
  */
 
 public class Lesson {
@@ -34,7 +36,7 @@ public class Lesson {
 					|| day.equals((String) ("Št")) || day
 						.equals((String) ("Pi")))) {
 				Log.w("Debug", "WrongFormatException");
-				throw new WrongFormatException(" day");
+				throw new WrongFormatException(" day, instead of there is:" + day);
 			}
 			if(scan.hasNext()){
 				from = scan.next();
@@ -54,7 +56,7 @@ public class Lesson {
 			} 
 			
 			if (duration > 8) {
-				throw new WrongFormatException(" duration");
+				throw new WrongFormatException(" duration, instead of there is:" + duration);
 			}
 			// preskocenie retazca viazuceho sa na dlzku hodiny
 			if(scan.hasNext()){
