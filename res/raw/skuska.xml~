@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rozvrh verzia="20121208141550" skolrok="2012/13" semester="zimný">
+ 	<typymiestnosti>
+    <typmiestnosti id="s" popis="Seminárna miestnosť"/>
+    <typmiestnosti id="l" popis="Praktická učebňa"/>
+    <typmiestnosti id="e" popis="Externá miestnosť"/>
+    <typmiestnosti id="u" popis="Učebňa"/>
+    <typmiestnosti id="0" popis=""/>
+  </typymiestnosti>
+  <typy>
+    <typ id="p" popis="Prednáška"/>
+    <typ id="c" popis="Cvičenie"/>
+    <typ id="k" popis="Kurz"/>
+    <typ id="v" popis="Výber/Vol"/>
+    <typ id="s" popis="Seminár"/>
+    <typ id="l" popis="Labák"/>
+    <typ id="n" popis="Nezadaný typ"/>
+  </typy>
+  <hodiny>
+    <hodina id="1">
+      <den>pon</den>
+      <zaciatok>840</zaciatok>
+      <koniec>885</koniec>
+      <miestnost>A</miestnost>
+      <trvanie>1</trvanie>
+      <predmet>1-FYZ-110</predmet>
+      <ucitelia>UCI1</ucitelia>
+      <kruzky></kruzky>
+      <typ>n</typ>
+      <oldid>1</oldid>
+      <zviazanehodiny></zviazanehodiny>
+      <zviazaneoldid></zviazaneoldid>
+    </hodina>
+  </hodiny>
+
+  <predmety>
+    <predmet id="PRED1">
+      <nazov>Mechanika</nazov>
+      <kod>FMFI.KAFZM/1-FYZ-110/00</kod>
+      <kratkykod>1-FYZ-110</kratkykod>
+      <kredity>7</kredity>
+      <rozsah>6K</rozsah>
+    </predmet>
+  </predmety>
+</rozvrh>

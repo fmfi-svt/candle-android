@@ -1,5 +1,13 @@
 package com.svt.candle;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+
+import com.svt.candle.XMLParsing.ParserXML;
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -25,6 +33,7 @@ public class MainActivity extends Activity {
 	// prednastavený rozvrh
 	String nickUrl = "2i2";
 	EditText getNick = null;
+	
 
 	/**
 	 * Control internet connection.
@@ -55,6 +64,8 @@ public class MainActivity extends Activity {
 			sb.append(" ");
 			sb.append(data.getTimeTable().timeTable.get(i).room);
 			sb.append(" ");
+			sb.append(data.getTimeTable().timeTable.get(i).typeOfSubject);
+			sb.append(" ");
 			sb.append(data.getTimeTable().timeTable.get(i).subjectName);
 			sb.append(" ");
 			sb.append(data.getTimeTable().timeTable.get(i).teachers);
@@ -68,11 +79,15 @@ public class MainActivity extends Activity {
 	 */
 	public void createTimeTable() {
 		try {
-			if (amIConnectedToInternet()) {
-				dataStorage = new DataStorageInternet(nickUrl);
-			} else {
-				dataStorage = new DataStorageSolid();
-			}
+//			if (amIConnectedToInternet()) {
+//				dataStorage = new DataStorageInternet(nickUrl);
+//			} else {
+//				dataStorage = new DataStorageSolid();
+//			}
+			
+			if(dataStorage == null) dataStorage = new DataStorageDatabase(this);
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.w("Debug", e.getMessage());
@@ -108,6 +123,8 @@ public class MainActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		createTimeTable();
+		printTimeTable();
+		
 	}
 	/**
 	 * Display timetable.
@@ -123,7 +140,7 @@ public class MainActivity extends Activity {
 					try {
 						getNick = (EditText) findViewById(R.id.editTextSearch);
 						nickUrl = getNick.getText().toString();
-						createTimeTable();
+						//createTimeTable();
 						
 						if(dataStorage.getTimeTable() != null){
 							if(!dataStorage.getTimeTable().isEmpty()){

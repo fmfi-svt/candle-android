@@ -25,6 +25,11 @@ public class TimeTable {
 			scan.close();
 		}
 	}
+	//konstruktor pre DataStorageDatabase
+	public TimeTable(ArrayList<Lesson> timeTable) {
+		this.timeTable = timeTable;
+	}
+	
 	public Boolean isEmpty() {
 		if(this.timeTable.size() == 0){
 			return true;
