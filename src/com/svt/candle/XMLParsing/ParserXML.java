@@ -30,9 +30,7 @@ public class ParserXML {
 		String line;
 		try {
 			while ((line = r.readLine()) != null) {
-			    total.append(line);
-				
-			}
+			    total.append(line);			}
 		} catch (IOException e) {
 			Log.e("Parser", e.getMessage());
 		}
@@ -48,11 +46,10 @@ public class ParserXML {
 			SAXParser sp = spf.newSAXParser();
 			XMLReader xr = sp.getXMLReader();
 
-			DataHandler dataHandler = new DataHandler(dbManager);
+			DataHandlerIf dataHandler = new DataHandlerIf(dbManager);
 			xr.setContentHandler(dataHandler);
-			
-			InputStreamReader isr = new InputStreamReader(inputStream, "UTF-8");
-			InputSource inputSource = new InputSource(isr);
+		
+			InputSource inputSource = new InputSource(inputStream);
 			inputSource.setEncoding("UTF-8");
 			sp.parse(inputSource, dataHandler);
 		} catch (ParserConfigurationException pce) {
