@@ -2,7 +2,9 @@ package com.svt.candle.XMLParsing;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import Database.DatabaseManager;
+
+import com.svt.candle.Database.DatabaseManager;
+
 import android.util.Log;
 /**
  *  trieda na parsovanie xml a ukladanie do databazy vsetky udaje, xperia8 2:40, sax parser if else 
@@ -75,6 +77,10 @@ public class DataHandlerIf extends DefaultHandler {
 		} else if (localName.equals("miestnosti")) {
 			bMiestnosti = true;
 			Log.d("parsovanie", "miestnosti");
+		} else if (localName.equals("rozvrh")) {
+			dbManager.insertInfo(atts.getValue("verzia"),
+					atts.getValue("skolrok"), atts.getValue("semester"));
+			Log.d("parsovanie", "rozvrh");
 		}
 	}
 

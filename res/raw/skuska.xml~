@@ -16,23 +16,52 @@
     <typ id="l" popis="Labák"/>
     <typ id="n" popis="Nezadaný typ"/>
   </typy>
-  <hodiny>
-    <hodina id="1">
-      <den>pon</den>
-      <zaciatok>840</zaciatok>
-      <koniec>885</koniec>
-      <miestnost>A</miestnost>
-      <trvanie>1</trvanie>
-      <predmet>FMFI.KAFZM/1-FYZ-110/00</predmet>
-      <ucitelia>UCI1</ucitelia>
-      <kruzky></kruzky>
-      <typ>n</typ>
-      <oldid>1</oldid>
-      <zviazanehodiny></zviazanehodiny>
-      <zviazaneoldid></zviazaneoldid>
-    </hodina>
-  </hodiny>
-
+  <ucitelia>
+    <ucitel id="UCI1">
+      <priezvisko> </priezvisko>
+      <meno> </meno>
+      <iniciala> </iniciala>
+      <katedra>FMFI</katedra>
+      <oddelenie>FMFI</oddelenie>
+      <login></login>
+    </ucitel>
+    <ucitel id="XXXUCIKAFZM1">
+      <priezvisko>.KAFZMUcitel1</priezvisko>
+      <meno> </meno>
+      <iniciala> </iniciala>
+      <katedra>KAFZM</katedra>
+      <oddelenie>KAFZM</oddelenie>
+      <login></login>
+    </ucitel>
+    <ucitel id="XXXUCIKAFZM10">
+      <priezvisko>.KAFZMUcitel10</priezvisko>
+      <meno> </meno>
+      <iniciala> </iniciala>
+      <katedra>KAFZM</katedra>
+      <oddelenie>KAFZM</oddelenie>
+      <login></login>
+    </ucitel>
+  </ucitelia>
+  <miestnosti>
+    <miestnost>
+      <nazov> </nazov>
+      <kapacita>0</kapacita>
+      <typ>0</typ>
+      <aiskod></aiskod>
+    </miestnost>
+    <miestnost>
+      <nazov>A</nazov>
+      <kapacita>330</kapacita>
+      <typ>u</typ>
+      <aiskod>FMFI PP A</aiskod>
+    </miestnost>
+    <miestnost>
+      <nazov>B</nazov>
+      <kapacita>220</kapacita>
+      <typ>u</typ>
+      <aiskod>FMFI PP B</aiskod>
+    </miestnost>
+  </miestnosti>
   <predmety>
     <predmet id="PRED1">
       <nazov>Mechanika</nazov>
@@ -41,5 +70,63 @@
       <kredity>7</kredity>
       <rozsah>6K</rozsah>
     </predmet>
+    <predmet id="PRED3">
+      <nazov>Molekulová fyzika</nazov>
+      <kod>FMFI.KAFZM/1-FYZ-155/00</kod>
+      <kratkykod>1-FYZ-155</kratkykod>
+      <kredity>3</kredity>
+      <rozsah>2K</rozsah>
+    </predmet>
+    <predmet id="PRED5">
+      <nazov>Úvod do astronómie</nazov>
+      <kod>FMFI.KAFZM/1-FYZ-410/00</kod>
+      <kratkykod>1-FYZ-410</kratkykod>
+      <kredity>3</kredity>
+      <rozsah>2P</rozsah>
+    </predmet>
   </predmety>
+  <hodiny>
+    <hodina id="1">
+      <den>pon</den>
+      <zaciatok>840</zaciatok>
+      <koniec>885</koniec>
+      <miestnost>A</miestnost>
+      <trvanie>1</trvanie>
+      <predmet>XXXPRED010</predmet>
+      <ucitelia>UCI1</ucitelia>
+      <kruzky></kruzky>
+      <typ>n</typ>
+      <oldid>1</oldid>
+      <zviazanehodiny></zviazanehodiny>
+      <zviazaneoldid></zviazaneoldid>
+    </hodina>
+    <hodina id="2">
+      <den>pon</den>
+      <zaciatok>840</zaciatok>
+      <koniec>885</koniec>
+      <miestnost>B</miestnost>
+      <trvanie>1</trvanie>
+      <predmet>XXXPRED010</predmet>
+      <ucitelia>UCI1</ucitelia>
+      <kruzky></kruzky>
+      <typ>n</typ>
+      <oldid>2</oldid>
+      <zviazanehodiny></zviazanehodiny>
+      <zviazaneoldid></zviazaneoldid>
+    </hodina>
+    <hodina id="3">
+      <den>pon</den>
+      <zaciatok>840</zaciatok>
+      <koniec>885</koniec>
+      <miestnost>F1</miestnost>
+      <trvanie>1</trvanie>
+      <predmet>XXXPRED010</predmet>
+      <ucitelia>UCI1</ucitelia>
+      <kruzky></kruzky>
+      <typ>n</typ>
+      <oldid>3</oldid>
+      <zviazanehodiny></zviazanehodiny>
+      <zviazaneoldid></zviazaneoldid>
+    </hodina>
+  </hodiny>
 </rozvrh>

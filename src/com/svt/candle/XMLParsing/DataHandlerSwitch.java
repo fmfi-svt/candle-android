@@ -2,10 +2,14 @@ package com.svt.candle.XMLParsing;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import Database.DatabaseManager;
+
+import com.svt.candle.Database.DatabaseManager;
+
 import android.util.Log;
+
 /**
- *  trieda na parsovanie xml a ukladanie do databazy vsetky udaje, xperia8 2:30, sax parser switch 
+ * trieda na parsovanie xml a ukladanie do databazy vsetky udaje, xperia8 2:30,
+ * sax parser switch
  */
 public class DataHandlerSwitch extends DefaultHandler {
 	// na vkladanie udajov do databazy
@@ -15,18 +19,16 @@ public class DataHandlerSwitch extends DefaultHandler {
 	private Boolean bMiestnosti = false;
 	private Boolean bPredmety = false;
 	private Boolean bHodiny = false;
-	
 
 	private HodinaData hodinaData = null;
 	private PredmetyData predmetyData = null;
 	private MiestrnostData miestnostData = null;
 	private UciteliaData uciteliaData = null;
-	
+
 	String chars = null;
 
 	public enum Tags {
-		TYP, TYPMIESTNOSTI, UCITEL, MIESTNOST, PREDMET, TYPY, TYPYMIESTNOSTI, UCITELIA, 
-		MIESTNOSTI, PREDMETY, HODINY, ROZVRH, HODINA
+		TYP, TYPMIESTNOSTI, UCITEL, MIESTNOST, PREDMET, TYPY, TYPYMIESTNOSTI, UCITELIA, MIESTNOSTI, PREDMETY, HODINY, ROZVRH, HODINA
 	}
 
 	public enum TagsTypy {
@@ -46,8 +48,7 @@ public class DataHandlerSwitch extends DefaultHandler {
 	}
 
 	public enum TagsHodiny {
-		HODINA, DEN, ZACIATOK, KONIEC, MIESTNOST, TRVANIE, PREDMET, UCITELIA, KRUZKY, TYP, 
-		OLDID, ZVIAZANEHODINY, ZVIAZANEOLDID, POZNAMKA, HODINY
+		HODINA, DEN, ZACIATOK, KONIEC, MIESTNOST, TRVANIE, PREDMET, UCITELIA, KRUZKY, TYP, OLDID, ZVIAZANEHODINY, ZVIAZANEOLDID, POZNAMKA, HODINY
 	}
 
 	public DataHandlerSwitch(DatabaseManager dbManager) {
@@ -58,48 +59,54 @@ public class DataHandlerSwitch extends DefaultHandler {
 		uciteliaData = new UciteliaData();
 	}
 
-
 	@Override
 	public void startDocument() throws SAXException {
 		Log.d("ParserXMl", "Dostal som sa do handlera1");
 	}
 
 	@Override
-	public void endDocument() throws SAXException {}
-	
+	public void endDocument() throws SAXException {
+	}
+
 	@Override
 	public void startElement(String namespaceURI, String localName,
 			String qName, org.xml.sax.Attributes atts) throws SAXException {
 
-		if(bHodiny){
+		if (bHodiny) {
 			if (localName.equals("hodina")) {
 				hodinaData.ID = atts.getValue("id");
 			}
-		} else if(bUcitelia){
-			if(localName.equals("ucitel")){
+		} else if (bUcitelia) {
+			if (localName.equals("ucitel")) {
 				uciteliaData.ID = atts.getValue("id");
 			}
-		} else if(bPredmety){
-			if(localName.equals("predmet")){
+		} else if (bPredmety) {
+			if (localName.equals("predmet")) {
 				predmetyData.ID = atts.getValue("id");
 			}
-		} else if(bMiestnosti){ //setrenie casu
-		} else if(localName.equals("typ")){
-			dbManager.insertTypHodin(atts.getValue("id"),atts.getValue("popis"));
-		} else if(localName.equals("typmiestnosti")){
-			 dbManager.insertTypMiestnosti(atts.getValue("id"),atts.getValue("popis"));
-		} else if(localName.equals("hodiny")){
+		} else if (bMiestnosti) { // setrenie casu
+		} else if (localName.equals("typ")) {
+			dbManager.insertTypHodin(atts.getValue("id"),
+					atts.getValue("popis"));
+		} else if (localName.equals("typmiestnosti")) {
+			dbManager.insertTypMiestnosti(atts.getValue("id"),
+					atts.getValue("popis"));
+		} else if (localName.equals("hodiny")) {
 			bHodiny = true;
 			Log.d("parsovanie", "hodiny");
-		} else if(localName.equals("ucitelia")){
+		} else if (localName.equals("ucitelia")) {
 			bUcitelia = true;
 			Log.d("parsovanie", "ucitelia");
-		} else if(localName.equals("predmety")){
+		} else if (localName.equals("predmety")) {
 			bPredmety = true;
 			Log.d("parsovanie", "predmety");
-		} else if(localName.equals("miestnosti")){
+		} else if (localName.equals("miestnosti")) {
 			bMiestnosti = true;
 			Log.d("parsovanie", "miestnosti");
+		} else if (localName.equals("rozvrh")) {
+			dbManager.insertInfo(atts.getValue("verzia"),
+					atts.getValue("skolrok"), atts.getValue("semester"));
+			Log.d("parsovanie", "rozvrh");
 		}
 	}
 
@@ -155,15 +162,15 @@ public class DataHandlerSwitch extends DefaultHandler {
 						hodinaData.KRUZKY, hodinaData.TYP, hodinaData.OLDID,
 						hodinaData.POZNAMKA);
 
-//				String delims = "[,]";
-//				String[] ucitelia = hodinaData.UCITELIA.split(delims);
-//				for (int i = 0; i < ucitelia.length; i++) {
-//					dbManager.insertHodUcitel(hodinaData.ID, ucitelia[i]);
-//				}
-//				String[] kruzky = hodinaData.KRUZKY.split(delims);
-//				for (int i = 0; i < kruzky.length; i++) {
-//					dbManager.insertHodKruzok(hodinaData.ID, kruzky[i]);
-//				}
+				// String delims = "[,]";
+				// String[] ucitelia = hodinaData.UCITELIA.split(delims);
+				// for (int i = 0; i < ucitelia.length; i++) {
+				// dbManager.insertHodUcitel(hodinaData.ID, ucitelia[i]);
+				// }
+				// String[] kruzky = hodinaData.KRUZKY.split(delims);
+				// for (int i = 0; i < kruzky.length; i++) {
+				// dbManager.insertHodKruzok(hodinaData.ID, kruzky[i]);
+				// }
 				break;
 			}
 
@@ -226,44 +233,44 @@ public class DataHandlerSwitch extends DefaultHandler {
 			}
 
 		} else if (bUcitelia) {
-//
-//			TagsUcitelia tag = TagsUcitelia.valueOf(localName.toUpperCase());
-//
-//			switch (tag) {
-//			case MENO:
-//				uciteliaData.MENO = chars;
-//				break;
-//			case PRIEZVISKO:
-//				uciteliaData.PRIEZVISKO = chars;
-//				break;
-//			case KATEDRA:
-//				uciteliaData.KATEDRA = chars;
-//				break;
-//			case ODDELENIE:
-//				uciteliaData.ODDELENIE = chars;
-//				break;
-//			case INICIALA:
-//				uciteliaData.INICIALA = chars;
-//				break;
-//			case LOGIN:
-//				uciteliaData.LOGIN = chars;
-//				break;
-//			case UCITELIA:
-//				bUcitelia = false;
-//				break;
-//			case UCITEL:
-//				dbManager.insertUcitel(uciteliaData.ID,
-//						uciteliaData.PRIEZVISKO, uciteliaData.MENO,
-//						uciteliaData.INICIALA, uciteliaData.KATEDRA,
-//						uciteliaData.ODDELENIE, uciteliaData.LOGIN);
-//				break;
-//			}
+			//
+			// TagsUcitelia tag = TagsUcitelia.valueOf(localName.toUpperCase());
+			//
+			// switch (tag) {
+			// case MENO:
+			// uciteliaData.MENO = chars;
+			// break;
+			// case PRIEZVISKO:
+			// uciteliaData.PRIEZVISKO = chars;
+			// break;
+			// case KATEDRA:
+			// uciteliaData.KATEDRA = chars;
+			// break;
+			// case ODDELENIE:
+			// uciteliaData.ODDELENIE = chars;
+			// break;
+			// case INICIALA:
+			// uciteliaData.INICIALA = chars;
+			// break;
+			// case LOGIN:
+			// uciteliaData.LOGIN = chars;
+			// break;
+			// case UCITELIA:
+			// bUcitelia = false;
+			// break;
+			// case UCITEL:
+			// dbManager.insertUcitel(uciteliaData.ID,
+			// uciteliaData.PRIEZVISKO, uciteliaData.MENO,
+			// uciteliaData.INICIALA, uciteliaData.KATEDRA,
+			// uciteliaData.ODDELENIE, uciteliaData.LOGIN);
+			// break;
+			// }
 		}
 	}
 
 	@Override
 	public void characters(char ch[], int start, int length) {
 		chars = new String(ch, start, length);
-		//chars = chars.trim();	
+		// chars = chars.trim();
 	}
 }

@@ -2,7 +2,9 @@ package com.svt.candle.XMLParsing;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import Database.DatabaseManager;
+
+import com.svt.candle.Database.DatabaseManager;
+
 import android.util.Log;
 
 /**
@@ -13,6 +15,7 @@ import android.util.Log;
 
 public class DataHandlerSlim extends DefaultHandler {
 	// na vkladanie udajov do databazy
+	//private DatabaseManager dbManager = null;
 	private DatabaseManager dbManager = null;
 	// zakladne
 	private Boolean bUcitelia = false;
@@ -25,7 +28,6 @@ public class DataHandlerSlim extends DefaultHandler {
 	private UciteliaData uciteliaData = null;
 
 	String chars = null;
-
 	public DataHandlerSlim(DatabaseManager dbManager) {
 		this.dbManager = dbManager;
 		predmetyData = new PredmetyData();
@@ -45,7 +47,6 @@ public class DataHandlerSlim extends DefaultHandler {
 	@Override
 	public void startElement(String namespaceURI, String localName,
 			String qName, org.xml.sax.Attributes atts) throws SAXException {
-
 		if (bHodiny) {
 			if (localName.charAt(0) == 'h') {
 				hodinaData.ID = atts.getValue("id");
@@ -77,6 +78,10 @@ public class DataHandlerSlim extends DefaultHandler {
 		} else if (localName.equals("miestnosti")) {
 			bMiestnosti = true;
 			Log.d("parsovanie", "miestnosti");
+		} else if (localName.equals("rozvrh")) {
+			dbManager.insertInfo(atts.getValue("verzia"),
+					atts.getValue("skolrok"), atts.getValue("semester"));
+			Log.d("parsovanie", "rozvrh");
 		}
 	}
 

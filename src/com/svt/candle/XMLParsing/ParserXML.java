@@ -11,7 +11,9 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import Database.DatabaseManager;
+
+import com.svt.candle.Database.DatabaseManager;
+
 import android.util.Log;
 
 public class ParserXML {

@@ -27,9 +27,13 @@ public class ThreadInternet extends Thread {
 	HttpURLConnection http = null;
 	InputStream is = null;
 	String nickUrl = "";
+	int len = 0;
 
-	public ThreadInternet(String nickUrl) {
-		this.nickUrl = nickUrl;
+	public ThreadInternet(int len) {
+		this.len = len;
+	}
+	//ak nezadame dlzku, nacita sa cela stranka
+	public ThreadInternet() {
 	}
 
 	// always verify the host - dont check for certificate
@@ -88,6 +92,10 @@ public class ThreadInternet extends Thread {
 		return text;
 	}
 
+	public InputStream getIS(){
+		return is;
+	}
+	
 	/**
 	 * Connect to the server and download data, make string from it.
 	 * 
@@ -96,8 +104,7 @@ public class ThreadInternet extends Thread {
 	@Override
 	public void run() {
 		try {
-			URL url = new URL("https://candle.fmph.uniba.sk/kruzky/" + nickUrl
-					+ ".txt");
+			URL url = new URL("http://davinci.fmph.uniba.sk/~filek1/rozvrh.xml");
 			// bezpecnost este prekonzultujeme.
 			if (url.getProtocol().toLowerCase().equals("https")) {
 				trustAllHosts();
@@ -111,7 +118,7 @@ public class ThreadInternet extends Thread {
 
 			http.connect();
 			is = http.getInputStream();
-			text = readIt(is, 2000);
+			text = readIt(is, len);
 
 		} catch (Exception e) {
 			Log.w("Debug", e.getMessage());

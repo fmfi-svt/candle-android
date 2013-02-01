@@ -1,51 +1,154 @@
 package com.svt.candle;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
-
+import java.util.Scanner;
+import com.svt.candle.Database.DatabaseManager;
 import com.svt.candle.XMLParsing.ParserXML;
-
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
-import Database.DatabaseManager;
-
-public class DataStorageDatabase implements DataStorage {
+/**
+ * Trieda starajuca sa o ziskanie a odovzdavanie dat
+ */
+public class DataStorageDatabase {
 	private Context context;
 	private TimeTable timeTable = null;
 	private ArrayList<Lesson> lessons = null;
-	private InputStream nacitanySubor = null;
 	private DatabaseManager dbManager = null;
 
-	@Override
-	public TimeTable getTimeTable() {
-		if (timeTable == null)
-			Log.d("datastoragedatabase", "timetable je null");
-		return timeTable;
-	}
+	public DataStorageDatabase(Context context) throws IOException {
 
-	public DataStorageDatabase(Context context) {
 		this.context = context;
-		this.createTimeTable();
+		dbManager = new DatabaseManager(context);
+		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
+		//aby sa dalo z cursora citat
+		cursorInfoRozvrh.moveToFirst();
+		Log.d("internet", checkVersionInternet());
+		Log.d("FILE", checkVersionFile());
+		/*
+		 * kontrola - ak je databaza prazdna, pozrieme ci sme pripojeny na net,
+		 * ak nie parsujeme interny subor, ak ano - parsujeme verziu na
+		 * internete ak je aktualnejsia.
+		 */
+
+		if (cursorInfoRozvrh.getCount() == 0) {
+			if (amIConnectedToInternet()) {
+				if (checkVersionInternet().equals(checkVersionFile())) {
+					Log.d("dsdb", "parse form file");
+					parseFromFile();
+				} else {
+					Log.d("dsdb", "parse form internet");
+					parseFromInternet();
+				}
+			} else {
+				Log.d("dsdb", "parse form file2");
+				parseFromFile();
+			}
+		}
+		/*
+		 * kontrola - ak je databaza naplnena a mame pristup k internetu,
+		 * skontrolujeme ci je aktualnejsia verzia - porovnavame databaza vs
+		 * internet
+		 */
+		else {
+			if (amIConnectedToInternet()) {
+				if (!checkVersionInternet().equals(
+						cursorInfoRozvrh.getString(0))) {
+					parseFromInternet();
+					Log.d("dsdb", "parse form internet2");
+				}
+			}
+		}
 	}
 
-	public void createTimeTable() {
+	/**
+	 * Control internet connection.
+	 */
+	public Boolean amIConnectedToInternet() {
+		ConnectivityManager connMgr = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		return (networkInfo != null && networkInfo.isConnected());
+	}
 
-		// nacitavanie suboru z res/raw pre parser
-		nacitanySubor = context.getResources().openRawResource(R.raw.rozvrh);
+	/**
+	 * zo stringu vrati verziu
+	 */
+	private String getVersionFromString(String input) {
+		Scanner scan = new Scanner(input);
+		String frg = null;
+		String delims = "[=]";
+		String[] frgs = new String[2];
+		while (scan.hasNext()) {
+			frg = scan.next();
+			frgs = frg.split(delims);
+			if (frgs[0].equals("verzia")) {
+				return frgs[1].substring(1, frgs[1].length() - 1);
+			}
+		}
+		return null;
+	}
 
-		lessons = new ArrayList<Lesson>();
-		// na pracu s databazou
-		dbManager = new DatabaseManager(context);
-		// kym vzdy tvorime databazu odznova - na testovanie, neskor pru
-		// aktualizacii
+	/**
+	 * Zistujeme verziu xml v internom subore rozvrh.xml
+	 */
+	public String checkVersionFile() throws IOException {
+		InputStream nacitanySubor = null;
+		nacitanySubor = context.getResources().openRawResource(R.raw.skuska);
+		int len = 100;
+		byte[] buffer = new byte[len];
+		if (nacitanySubor.read(buffer, 0, len) == -1) {
+			Log.d("buffer", "buffer je null");
+			return "";
+		}
+		return getVersionFromString(new String(buffer));
+	}
+
+	/**
+	 * Zistujeme verziu xml na internete
+	 */
+	public String checkVersionInternet() throws MalformedURLException {
+		ThreadInternet ti = new ThreadInternet(100);
+		ti.run();
+		String data = ti.getDataFromInternet();
+		return getVersionFromString(data);
+	}
+
+	/**
+	 * Rozparuje interny subor a ulozi data do databazy
+	 */
+	private void parseFromFile() {
 		dbManager.vymazRiadkyDatabazy();
-		// ked sa zmeni struktura databazy
-		// context.deleteDatabase("rozvrh3");
-		// do db vyparsuje rozvrh.txt
-		ParserXML parser = new ParserXML(nacitanySubor, dbManager);
-		Cursor cursor = dbManager.getLesson();
+		// nacitavanie suboru z res/raw pre parser
+		InputStream nacitanySubor = null;
+		nacitanySubor = context.getResources().openRawResource(R.raw.skuska);
+		new ParserXML(nacitanySubor, dbManager);
+	}
+
+	/**
+	 * Rozparuje xml z xml suboru na internete a ulozi data do databazy Na
+	 * xperii x8 cas 2:30 so DataHadlerIf, cize ako pri subore
+	 */
+	private void parseFromInternet() {
+		dbManager.vymazRiadkyDatabazy();
+		ThreadInternet ti = new ThreadInternet();
+		ti.run();
+		new ParserXML(ti.getIS(), dbManager);
+	}
+
+	/**
+	 * Vyhlada data v databaze podla miestnosti a vrati objekt TimeTable
+	 */
+	public TimeTable getTTaccTORoom(String room) {
+		lessons = new ArrayList<Lesson>();
+
+		Cursor cursor = dbManager.searchLessonsByRoom(room);
 
 		Log.d("cursor", "pocet riadkov = " + cursor.getCount());
 		cursor.moveToFirst();
@@ -61,6 +164,7 @@ public class DataStorageDatabase implements DataStorage {
 		cursor.close();
 
 		timeTable = new TimeTable(lessons);
+		return timeTable;
 
 	}
 }

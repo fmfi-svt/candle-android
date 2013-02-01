@@ -1,15 +1,6 @@
 package com.svt.candle;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 
-import com.svt.candle.XMLParsing.ParserXML;
-
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -29,46 +20,41 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 	TextView printTimeTable = null;
 	Button search = null;
-	DataStorage dataStorage = null;
+	DataStorageDatabase dataStorage = null;
 	// prednastavený rozvrh
 	String nickUrl = "2i2";
 	EditText getNick = null;
+	// rozvrh zobrazujuci sa vzdy na zaciatku
+	TimeTable current = null;
 	
-
-	/**
-	 * Control internet connection.
-	 */
-	public Boolean amIConnectedToInternet() {
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		return (networkInfo != null && networkInfo.isConnected());
-	}
-
 	/**
 	 * Return string of timetable.
 	 */
-	public static String timeTableToString(DataStorage data) {
-		if (data == null) {
-			return "no data";
+	public static String timeTableToString(TimeTable timeTable, Context context) {
+		if (timeTable == null) {
+			final Toast toast = Toast.makeText(context,
+					"Nemate nastaveny defaultny rozvrh!", Toast.LENGTH_SHORT);
+			toast.show();
+			return "";
 		}
 
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < data.getTimeTable().timeTable.size(); i++) {
-			sb.append(data.getTimeTable().timeTable.get(i).day);
+		for (int i = 0; i < timeTable.tLessons.size(); i++) {
+			sb.append(timeTable.tLessons.get(i).day);
 			sb.append(" ");
-			sb.append(data.getTimeTable().timeTable.get(i).duration);
+			sb.append(timeTable.tLessons.get(i).duration);
 			sb.append(" ");
-			sb.append(data.getTimeTable().timeTable.get(i).from);
+			sb.append(timeTable.tLessons.get(i).from);
 			sb.append(" ");
-			sb.append(data.getTimeTable().timeTable.get(i).to);
+			sb.append(timeTable.tLessons.get(i).to);
 			sb.append(" ");
-			sb.append(data.getTimeTable().timeTable.get(i).room);
+			sb.append(timeTable.tLessons.get(i).room);
 			sb.append(" ");
-			sb.append(data.getTimeTable().timeTable.get(i).typeOfSubject);
+			sb.append(timeTable.tLessons.get(i).typeOfSubject);
 			sb.append(" ");
-			sb.append(data.getTimeTable().timeTable.get(i).subjectName);
+			sb.append(timeTable.tLessons.get(i).subjectName);
 			sb.append(" ");
-			sb.append(data.getTimeTable().timeTable.get(i).teachers);
+			sb.append(timeTable.tLessons.get(i).teachers);
 			sb.append("\n\n");
 		}
 		return sb.toString();
@@ -77,26 +63,19 @@ public class MainActivity extends Activity {
 	/**
 	 * Create timetable.
 	 */
-	public void createTimeTable() {
+	public void initializeDataStorage() {
 		try {
-//			if (amIConnectedToInternet()) {
-//				dataStorage = new DataStorageInternet(nickUrl);
-//			} else {
-//				dataStorage = new DataStorageSolid();
-//			}
-			
 			if(dataStorage == null) dataStorage = new DataStorageDatabase(this);
-			
-			
+			//provizorna nastavanie zatial
+			current = dataStorage.getTTaccTORoom("A");
 		} catch (Exception e) {
-			e.printStackTrace();
 			Log.w("Debug", e.getMessage());
 		}
 	}
 
-	public void printTimeTable() {
+	public void printTimeTable(TimeTable timeTable) {
 		if (dataStorage != null) {
-			printTimeTable.setText(timeTableToString(dataStorage));
+			printTimeTable.setText(timeTableToString(timeTable, this));
 		}
 	}
 	/**
@@ -122,8 +101,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		createTimeTable();
-		printTimeTable();
+		initializeDataStorage();
+		printTimeTable(current);
 		
 	}
 	/**
@@ -136,37 +115,37 @@ public class MainActivity extends Activity {
 		search = (Button) findViewById(R.id.buttonSearch);
 		search.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				if (amIConnectedToInternet()) {
-					try {
-						getNick = (EditText) findViewById(R.id.editTextSearch);
-						nickUrl = getNick.getText().toString();
-						//createTimeTable();
-						
-						if(dataStorage.getTimeTable() != null){
-							if(!dataStorage.getTimeTable().isEmpty()){
-								printTimeTable();
-							} else{
-								final Toast toast = Toast.makeText(getApplicationContext(),
-										"Timetable is empty!", Toast.LENGTH_SHORT);
-								toast.show();
-							}
-						} else {
-							final Toast toast = Toast.makeText(getApplicationContext(),
-									"Timetable does not exist!", Toast.LENGTH_SHORT);
-							toast.show();
-						}
-						
-					} catch (Exception e) {
-						Log.w("Debug", e.getMessage());
-					}
-				} else {
-					final Toast toast = Toast.makeText(getApplicationContext(),
-							"You have not internet access", Toast.LENGTH_SHORT);
-					toast.show();
-				}
+//				if (amIConnectedToInternet()) {
+//					try {
+//						getNick = (EditText) findViewById(R.id.editTextSearch);
+//						nickUrl = getNick.getText().toString();
+//						//createTimeTable();
+//						
+//						if(dataStorage.getTimeTable() != null){
+//							if(!dataStorage.getTimeTable().isEmpty()){
+//								printTimeTable();
+//							} else{
+//								final Toast toast = Toast.makeText(getApplicationContext(),
+//										"Timetable is empty!", Toast.LENGTH_SHORT);
+//								toast.show();
+//							}
+//						} else {
+//							final Toast toast = Toast.makeText(getApplicationContext(),
+//									"Timetable does not exist!", Toast.LENGTH_SHORT);
+//							toast.show();
+//						}
+//						
+//					} catch (Exception e) {
+//						Log.w("Debug", e.getMessage());
+//					}
+//				} else {
+//					final Toast toast = Toast.makeText(getApplicationContext(),
+//							"You have not internet access", Toast.LENGTH_SHORT);
+//					toast.show();
+//				}
 			}
 		});
 
-		printTimeTable();
+		printTimeTable(current);
 	}
 }

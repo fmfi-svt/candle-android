@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rozvrh verzia="20121208141550" skolrok="2012/13" semester="zimný">
+<rozvrh verzia="20121208141551" skolrok="2012/13" semester="zimný">
  	<typymiestnosti>
     <typmiestnosti id="s" popis="Seminárna miestnosť"/>
     <typmiestnosti id="l" popis="Praktická učebňa"/>
