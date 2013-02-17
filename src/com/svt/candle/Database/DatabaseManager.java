@@ -1,5 +1,13 @@
 package com.svt.candle.Database;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+
+import com.svt.candle.Lesson;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -59,6 +67,7 @@ public class DatabaseManager {
 	private static final String COLUMN_HODINY_TYP = "typ";
 	private static final String COLUMN_HODINY_OLDID = "oldid";
 	private static final String COLUMN_HODINY_POZNAMKA = "poznamka";
+	
 	// tabulka pre id ucitelov, ktori ucia danu hodinu
 	private static final String TB_HODUCITEL = "hoducitel";
 	private static final String COLUMN_HODUCITEL_IDHODINY = "idHodiny";
@@ -67,7 +76,7 @@ public class DatabaseManager {
 	private static final String TB_HODKRUZOK = "hodkruzok";
 	private static final String COLUMN_HODKRUZOK_IDHODINY = "idHodiny";
 	private static final String COLUMN_HODKRUZOK_IDKRUZKU = "idKruzku";
-	//tabulka pre info o rozvrhu
+	// tabulka pre info o rozvrhu
 	private static final String TB_INFO = "info";
 	private static final String COLUMN_INFO_VERZIA = "verzia";
 	private static final String COLUMN_INFO_SKOLROK = "skolrok";
@@ -126,7 +135,7 @@ public class DatabaseManager {
 					+ COLUMN_PREDMETY_KREDITY + " TEXT,"
 					+ COLUMN_PREDMETY_ROZSAH + " TEXT);";
 			db.execSQL(createQuery);
-			// vytvorenie tablulky predmety
+			// vytvorenie tablulky hodiny
 			createQuery = "CREATE TABLE " + TB_HODINY_NAME + "("
 					+ COLUMN_HODINY_ID + " TEXT," + COLUMN_HODINY_DEN
 					+ " TEXT," + COLUMN_HODINY_ZACIATOK + " TEXT,"
@@ -142,18 +151,18 @@ public class DatabaseManager {
 					+ COLUMN_HODUCITEL_IDHODINY + " TEXT,"
 					+ COLUMN_HODUCITEL_IDUCITELA + " TEXT);";
 			db.execSQL(createQuery);
-			// vytvorenie tablulky hoducitel
+			// vytvorenie tablulky hodkruzok
 			createQuery = "CREATE TABLE " + TB_HODKRUZOK + "("
 					+ COLUMN_HODKRUZOK_IDHODINY + " TEXT,"
 					+ COLUMN_HODKRUZOK_IDKRUZKU + " TEXT);";
 			db.execSQL(createQuery);
-			//vytvorenie tabulky info, sluzi na uchovanie verzie,skrok a semester
-			createQuery = "CREATE TABLE " + TB_INFO + "("
-					+ COLUMN_INFO_VERZIA + " TEXT,"
-					+ COLUMN_INFO_SKOLROK + " TEXT,"
+			// vytvorenie tabulky info, sluzi na uchovanie verzie,skrok a
+			// semester
+			createQuery = "CREATE TABLE " + TB_INFO + "(" + COLUMN_INFO_VERZIA
+					+ " TEXT," + COLUMN_INFO_SKOLROK + " TEXT,"
 					+ COLUMN_INFO_SEMESTER + " TEXT);";
 			db.execSQL(createQuery);
-			
+
 		}
 
 		// nebudeme upravovat strukturu databazy
@@ -269,7 +278,7 @@ public class DatabaseManager {
 		database.insert(TB_HODINY_NAME, null, newCon);
 		database.close();
 	}
-	
+
 	// metoda vlozi do tabulky info udaje o rozvrhu
 	public void insertInfo(String verzia, String skolrok, String semester) {
 		database = dbHelper.getWritableDatabase();
@@ -281,38 +290,61 @@ public class DatabaseManager {
 		database.close();
 	}
 
-	// na test = vrati z databazy vsetky hodiny v tvare objektu lesson
+	// vyhladavanie v databaze podla miestnosti
 	public Cursor searchLessonsByRoom(String room) {
 		database = dbHelper.getReadableDatabase();
-		 final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
-		 + COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
-		 + ", h." + COLUMN_HODINY_TRVANIE + ", h."
-		 + COLUMN_HODINY_MIESTNOST + ", m." + COLUMN_TYPYH_POPIS
-		 + ", p." + COLUMN_PREDMETY_NAZOV + ", h."
-		 + COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME + " h , "
-		 + TB_TYPYH_NAME + " m , " + TB_PREDMETY_NAME + " p WHERE "
-		 + "h." + COLUMN_HODINY_TYP + " = m." + COLUMN_TYPYH_ID
-		 + " AND " + "p." + COLUMN_PREDMETY_ID + " = h."
-		 + COLUMN_HODINY_PREDMET + " AND h." + COLUMN_HODINY_MIESTNOST
-		 + " =\""  + room + "\" ";
+		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
+				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
+				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
+				+ COLUMN_HODINY_MIESTNOST + ", m." + COLUMN_TYPYH_POPIS
+				+ ", p." + COLUMN_PREDMETY_NAZOV + ", h."
+				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME + " h , "
+				+ TB_TYPYH_NAME + " m , " + TB_PREDMETY_NAME + " p WHERE "
+				+ "h." + COLUMN_HODINY_TYP + " = m." + COLUMN_TYPYH_ID
+				+ " AND " + "p." + COLUMN_PREDMETY_ID + " = h."
+				+ COLUMN_HODINY_PREDMET + " AND h." + COLUMN_HODINY_MIESTNOST
+				+ " =\"" + room + "\" ";
 
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
 		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
 		database.close();
 		return cursor;
 	}
-	
-	public Cursor dajInfoRozvrhu(){
-		database = dbHelper.getWritableDatabase();
-		 final String MY_QUERY = "SELECT * FROM " + TB_INFO;
-				Cursor cursor = database.rawQuery(MY_QUERY, null);
-				Log.d("cursor DBM", Integer.toString(cursor.getCount()));
-				database.close();
-				return cursor;
-		
+
+	// vyhladavanie v databaze podla kruzkov
+	public Cursor searchLessonsByClass(String kruzok) {
+		database = dbHelper.getReadableDatabase();
+		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
+				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
+				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
+				+ COLUMN_HODINY_MIESTNOST + ", m." + COLUMN_TYPYH_POPIS
+				+ ", p." + COLUMN_PREDMETY_NAZOV + ", h."
+				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME + " h , "
+				+ TB_TYPYH_NAME + " m , " + TB_PREDMETY_NAME + " p, "
+				+ TB_HODKRUZOK + " k WHERE " + "h." + COLUMN_HODINY_TYP
+				+ " = m." + COLUMN_TYPYH_ID + " AND " + "p."
+				+ COLUMN_PREDMETY_ID + " = h." + COLUMN_HODINY_PREDMET
+				+ " AND h." + COLUMN_HODINY_ID + " = k." + COLUMN_HODKRUZOK_IDHODINY + " AND k."
+				+ COLUMN_HODKRUZOK_IDKRUZKU + " = \"" + kruzok + "\"C\"";
+
+		Cursor cursor = database.rawQuery(MY_QUERY, null);
+		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
+		database.close();
+		return cursor;
 	}
 
-	// zmaze vsetky riadky tabuliek, ale zachova sa struktura = nevola sa onCreate!
+	public Cursor dajInfoRozvrhu() {
+		database = dbHelper.getWritableDatabase();
+		final String MY_QUERY = "SELECT * FROM " + TB_INFO;
+		Cursor cursor = database.rawQuery(MY_QUERY, null);
+		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
+		database.close();
+		return cursor;
+
+	}
+
+	// zmaze vsetky riadky tabuliek, ale zachova sa struktura = nevola sa
+	// onCreate!
 	public void vymazRiadkyDatabazy() {
 		database = dbHelper.getWritableDatabase();
 		database.delete(TB_TYPYH_NAME, null, null);
@@ -326,8 +358,54 @@ public class DatabaseManager {
 		database.delete(TB_INFO, null, null);
 		database.close();
 	}
-	//vymaze databazu aj zo strukturou
+
+	public void insertTable(String string){
+		database = dbHelper.getWritableDatabase();
+		database.execSQL(string);
+	}
+	//testovanie tabuliek
+	public Cursor checkTable(String TB_NAME) {
+			database = dbHelper.getReadableDatabase();
+			final String MY_QUERY = "SELECT * FROM " + TB_NAME; 
+
+			Cursor cursor = database.rawQuery(MY_QUERY, null);
+			Log.d("cursor DBM", Integer.toString(cursor.getCount()));
+			database.close();
+//			cursor.moveToFirst();
+//			for (int i = 0; i < cursor.getCount(); i += 100) {
+//				
+//				for (int j = 0; j < cursor.getColumnCount(); j++) {
+//					Log.d("test",cursor.getColumnName(j) + " " +cursor.getString(j));
+//				}
+//				Log.d("test", "????????????????????????????");
+//				cursor.moveToNext();
+//			}
+			cursor.close();
+			return cursor;
+
+	}
+	// vymaze databazu aj zo strukturou
 	public void zmamDatabazu() {
 		context.deleteDatabase(DATABASE_NAME);
 	}
+	
+	public static void copyFile(FileInputStream fromFile, FileOutputStream toFile) throws IOException {
+        FileChannel fromChannel = null;
+        FileChannel toChannel = null;
+        try {
+            fromChannel = fromFile.getChannel();
+            toChannel = toFile.getChannel();
+            fromChannel.transferTo(0, fromChannel.size(), toChannel);
+        } finally {
+            try {
+                if (fromChannel != null) {
+                    fromChannel.close();
+                }
+            } finally {
+                if (toChannel != null) {
+                    toChannel.close();
+                }
+            }
+        }
+    }
 }

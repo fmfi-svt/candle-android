@@ -1,7 +1,11 @@
 package com.svt.candle;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,6 +15,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.util.Log;
 
 /**
@@ -26,11 +31,13 @@ public class DataStorageDatabase {
 
 		this.context = context;
 		dbManager = new DatabaseManager(context);
+		dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
 		//aby sa dalo z cursora citat
 		cursorInfoRozvrh.moveToFirst();
-		Log.d("internet", checkVersionInternet());
-		Log.d("FILE", checkVersionFile());
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		dbManager.vymazRiadkyDatabazy();
+		
 		/*
 		 * kontrola - ak je databaza prazdna, pozrieme ci sme pripojeny na net,
 		 * ak nie parsujeme interny subor, ak ano - parsujeme verziu na
@@ -50,6 +57,15 @@ public class DataStorageDatabase {
 				Log.d("dsdb", "parse form file2");
 				parseFromFile();
 			}
+			dbManager.checkTable("hodiny");
+			dbManager.checkTable("typy");
+			dbManager.checkTable("typymiestnosti");
+			dbManager.checkTable("ucitelia");
+			dbManager.checkTable("predmety");
+			dbManager.checkTable("miestnosti");
+			dbManager.checkTable("hodkruzok");
+			dbManager.checkTable("hoducitel");
+			dbManager.checkTable("info");
 		}
 		/*
 		 * kontrola - ak je databaza naplnena a mame pristup k internetu,
@@ -100,7 +116,7 @@ public class DataStorageDatabase {
 	 */
 	public String checkVersionFile() throws IOException {
 		InputStream nacitanySubor = null;
-		nacitanySubor = context.getResources().openRawResource(R.raw.skuska);
+		nacitanySubor = context.getResources().openRawResource(R.raw.rozvrh);
 		int len = 100;
 		byte[] buffer = new byte[len];
 		if (nacitanySubor.read(buffer, 0, len) == -1) {
@@ -124,11 +140,26 @@ public class DataStorageDatabase {
 	 * Rozparuje interny subor a ulozi data do databazy
 	 */
 	private void parseFromFile() {
-		dbManager.vymazRiadkyDatabazy();
-		// nacitavanie suboru z res/raw pre parser
-		InputStream nacitanySubor = null;
-		nacitanySubor = context.getResources().openRawResource(R.raw.skuska);
-		new ParserXML(nacitanySubor, dbManager);
+		try {
+			String string = "";
+			InputStreamReader isr = new InputStreamReader(context.getResources().openRawResource(R.raw.sqlfile));
+			BufferedReader br = new BufferedReader(isr);
+			string = br.readLine();
+			
+			while(string != null){
+				dbManager.insertTable(string);
+				string = br.readLine();
+			}
+			
+		} catch (Exception e) {
+			Log.d("parsovanieSQLfile",e.getMessage());
+		}
+		
+//		dbManager.vymazRiadkyDatabazy();
+//		// nacitavanie suboru z res/raw pre parser
+//		InputStream nacitanySubor = null;
+//		nacitanySubor = context.getResources().openRawResource(R.raw.skuska);
+//		new ParserXML(nacitanySubor, dbManager);
 	}
 
 	/**
