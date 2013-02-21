@@ -16,6 +16,7 @@ import android.util.Log;
 
 /**
  * Trieda starajuca sa o ziskanie a odovzdavanie dat
+ * otestovat - verzia check file,internet a parsovanie file,internet
  */
 public class DataStorageDatabase {
 	private Context context;
@@ -24,16 +25,16 @@ public class DataStorageDatabase {
 	private DatabaseManager dbManager = null;
 
 	public DataStorageDatabase(Context context) throws IOException {
-		
+
 		this.context = context;
 		dbManager = new DatabaseManager(context);
 		dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
-		//aby sa dalo z cursora citat
+		// aby sa dalo z cursora citat pri kontrole
 		cursorInfoRozvrh.moveToFirst();
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		dbManager.vymazRiadkyDatabazy();
-		
+		// iba pre testovanie
+		// dbManager.vymazRiadkyDatabazy();
+		//
 		/*
 		 * kontrola - ak je databaza prazdna, pozrieme ci sme pripojeny na net,
 		 * ak nie parsujeme interny subor, ak ano - parsujeme verziu na
@@ -132,30 +133,33 @@ public class DataStorageDatabase {
 		return getVersionFromString(data);
 	}
 
+	private void parse(InputStreamReader isr) {
+		String string = "";
+		BufferedReader br = new BufferedReader(isr);
+		try {
+			string = br.readLine();// nacitana verzia - tu nechceme
+			string = br.readLine();
+			while (string != null) {
+				dbManager.insertTable(string);
+				string = br.readLine();
+			}
+		} catch (IOException e) {
+			Log.d("parse", e.getMessage());
+		}
+
+	}
+
 	/**
 	 * Rozparuje interny subor a ulozi data do databazy
 	 */
 	private void parseFromFile() {
 		try {
-			String string = "";
-			InputStreamReader isr = new InputStreamReader(context.getResources().openRawResource(R.raw.sqlfile));
-			BufferedReader br = new BufferedReader(isr);
-			string = br.readLine();//nacitana verzia - tu nechceme
-			string = br.readLine();
-			while(string != null){
-				dbManager.insertTable(string);
-				string = br.readLine();
-			}
-			
+			InputStreamReader isr = new InputStreamReader(context
+					.getResources().openRawResource(R.raw.sqlfile));
+			parse(isr);
 		} catch (Exception e) {
-			Log.d("parsovanieSQLfile",e.getMessage());
+			Log.d("parsovanieSQLfile", e.getMessage());
 		}
-		
-//		dbManager.vymazRiadkyDatabazy();
-//		// nacitavanie suboru z res/raw pre parser
-//		InputStream nacitanySubor = null;
-//		nacitanySubor = context.getResources().openRawResource(R.raw.skuska);
-//		new ParserXML(nacitanySubor, dbManager);
 	}
 
 	/**
@@ -163,16 +167,21 @@ public class DataStorageDatabase {
 	 * xperii x8 cas 2:30 so DataHadlerIf, cize ako pri subore
 	 */
 	private void parseFromInternet() {
-		dbManager.vymazRiadkyDatabazy();
-		ThreadInternet ti = new ThreadInternet();
-		ti.run();
-		//new ParserXML(ti.getIS(), dbManager);
+		try {
+			dbManager.vymazRiadkyDatabazy();
+			ThreadInternet ti = new ThreadInternet();
+			ti.run();
+			InputStreamReader isr = new InputStreamReader(ti.getIS());
+			parse(isr);
+		} catch (Exception e) {
+			Log.d("parseFromInternet", e.getMessage());
+		}
 	}
 
 	/**
 	 * Vyhlada data v databaze podla miestnosti a vrati objekt TimeTable
 	 */
-	public TimeTable getTTaccTORoom(String room) {
+	public TimeTable getTimeTableAccordingTORoom(String room) {
 		lessons = new ArrayList<Lesson>();
 
 		Cursor cursor = dbManager.searchLessonsByRoom(room);
