@@ -1,8 +1,6 @@
 package com.svt.candle;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,12 +8,10 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import com.svt.candle.Database.DatabaseManager;
-import com.svt.candle.XMLParsing.ParserXML;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Environment;
 import android.util.Log;
 
 /**
@@ -28,7 +24,7 @@ public class DataStorageDatabase {
 	private DatabaseManager dbManager = null;
 
 	public DataStorageDatabase(Context context) throws IOException {
-
+		
 		this.context = context;
 		dbManager = new DatabaseManager(context);
 		dbManager.vymazRiadkyDatabazy();
@@ -116,7 +112,7 @@ public class DataStorageDatabase {
 	 */
 	public String checkVersionFile() throws IOException {
 		InputStream nacitanySubor = null;
-		nacitanySubor = context.getResources().openRawResource(R.raw.rozvrh);
+		nacitanySubor = context.getResources().openRawResource(R.raw.sqlfile);
 		int len = 100;
 		byte[] buffer = new byte[len];
 		if (nacitanySubor.read(buffer, 0, len) == -1) {
@@ -144,8 +140,8 @@ public class DataStorageDatabase {
 			String string = "";
 			InputStreamReader isr = new InputStreamReader(context.getResources().openRawResource(R.raw.sqlfile));
 			BufferedReader br = new BufferedReader(isr);
+			string = br.readLine();//nacitana verzia - tu nechceme
 			string = br.readLine();
-			
 			while(string != null){
 				dbManager.insertTable(string);
 				string = br.readLine();
@@ -170,7 +166,7 @@ public class DataStorageDatabase {
 		dbManager.vymazRiadkyDatabazy();
 		ThreadInternet ti = new ThreadInternet();
 		ti.run();
-		new ParserXML(ti.getIS(), dbManager);
+		//new ParserXML(ti.getIS(), dbManager);
 	}
 
 	/**
