@@ -6,6 +6,9 @@ import android.app.Activity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,6 +62,17 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
+		MenuItem searchMenuItem = menu.add("Search");
+		MenuItem.OnMenuItemClickListener searchClickListener = new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		};
+
+		searchMenuItem.setOnMenuItemClickListener(searchClickListener);
 		return true;
 	}
 	/**
