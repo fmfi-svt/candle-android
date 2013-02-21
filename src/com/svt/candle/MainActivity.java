@@ -3,7 +3,6 @@ package com.svt.candle;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Context;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Main activity
@@ -27,39 +25,7 @@ public class MainActivity extends Activity {
 	// rozvrh zobrazujuci sa vzdy na zaciatku
 	TimeTable current = null;
 	
-	/**
-	 * Return string of timetable.
-	 */
-	public static String timeTableToString(TimeTable timeTable, Context context) {
-		if (timeTable == null) {
-			final Toast toast = Toast.makeText(context,
-					"Nemate nastaveny defaultny rozvrh!", Toast.LENGTH_SHORT);
-			toast.show();
-			return "";
-		}
-
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < timeTable.tLessons.size(); i++) {
-			sb.append(timeTable.tLessons.get(i).day);
-			sb.append(" ");
-			sb.append(timeTable.tLessons.get(i).duration);
-			sb.append(" ");
-			sb.append(timeTable.tLessons.get(i).from);
-			sb.append(" ");
-			sb.append(timeTable.tLessons.get(i).to);
-			sb.append(" ");
-			sb.append(timeTable.tLessons.get(i).room);
-			sb.append(" ");
-			sb.append(timeTable.tLessons.get(i).typeOfSubject);
-			sb.append(" ");
-			sb.append(timeTable.tLessons.get(i).subjectName);
-			sb.append(" ");
-			sb.append(timeTable.tLessons.get(i).teachers);
-			sb.append("\n\n");
-		}
-		return sb.toString();
-	}
-
+	
 	/**
 	 * Create timetable.
 	 */
@@ -67,7 +33,7 @@ public class MainActivity extends Activity {
 		try {
 			if(dataStorage == null) dataStorage = new DataStorageDatabase(this);
 			//provizorna nastavanie zatial
-			current = dataStorage.getTTaccTORoom("A");
+			current = dataStorage.getTimeTableAccordingTORoom("A");
 		} catch (Exception e) {
 			Log.w("Debug", e.getMessage());
 		}
@@ -75,7 +41,7 @@ public class MainActivity extends Activity {
 
 	public void printTimeTable(TimeTable timeTable) {
 		if (dataStorage != null) {
-			printTimeTable.setText(timeTableToString(timeTable, this));
+			printTimeTable.setText(timeTable.timeTableToString(this));
 		}
 	}
 	/**
