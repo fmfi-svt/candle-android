@@ -1,12 +1,14 @@
 package com.svt.candle;
 
 
+import java.io.Serializable;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
@@ -34,7 +36,9 @@ public class MainActivity extends Activity {
 	 */
 	public void initializeDataStorage() {
 		try {
-			if(dataStorage == null) dataStorage = new DataStorageDatabase(this);
+			if(dataStorage == null) {
+				dataStorage = DataStorageDatabase.getDataStorageDatabaseInstance(this);
+			}
 			//provizorna nastavanie zatial
 			current = dataStorage.getTimeTableAccordingTORoom("A");
 		} catch (Exception e) {
@@ -55,6 +59,7 @@ public class MainActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 		printTimeTable = (TextView) findViewById(R.id.printCandle);
 		printTimeTable.setMovementMethod(new ScrollingMovementMethod());
 	}
@@ -67,7 +72,13 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
-				// TODO Auto-generated method stub
+				Log.d("search", "funguje tlacitko");
+				Intent myIntent = new Intent(MainActivity.this, SearchActivity.class);
+				Serializable data = new Serializable() {
+					
+				};
+				
+				startActivity(myIntent);
 				return false;
 			}
 		};
@@ -92,9 +103,9 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-		search = (Button) findViewById(R.id.buttonSearch);
-		search.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
+//		search = (Button) findViewById(R.id.buttonSearch);
+//		search.setOnClickListener(new View.OnClickListener() {
+//			public void onClick(View v) {
 //				if (amIConnectedToInternet()) {
 //					try {
 //						getNick = (EditText) findViewById(R.id.editTextSearch);
@@ -123,8 +134,8 @@ public class MainActivity extends Activity {
 //							"You have not internet access", Toast.LENGTH_SHORT);
 //					toast.show();
 //				}
-			}
-		});
+//			}
+//		});
 
 		printTimeTable(current);
 	}

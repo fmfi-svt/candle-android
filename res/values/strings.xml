@@ -7,5 +7,6 @@
     <string name="title_activity_main">Candle</string>
     <string name="hint_search">Zadaj skratku krúžku</string>
     <string name="button_search">Search</string>
-    
+    <string name="title_activity_search">SearchActivity</string>
+
 </resources>

@@ -12,6 +12,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.CalendarContract.Instances;
 import android.util.Log;
 
 /**
@@ -23,12 +24,24 @@ public class DataStorageDatabase {
 	private TimeTable timeTable = null;
 	private ArrayList<Lesson> lessons = null;
 	private DatabaseManager dbManager = null;
-
-	public DataStorageDatabase(Context context) throws IOException {
-
+	private static DataStorageDatabase instance = null;
+	
+	public static DataStorageDatabase getDataStorageDatabaseInstance(Context context){
+		if(instance != null){
+			return instance;
+		} else {
+			try {
+				instance = new DataStorageDatabase(context);
+			} catch (IOException e) {
+				Log.d("constructor", "problem v konstruktore");
+			}
+		}
+		return instance;
+	}
+	
+	private DataStorageDatabase(Context context) throws IOException {
 		this.context = context;
 		dbManager = new DatabaseManager(context);
-		dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
 		// aby sa dalo z cursora citat pri kontrole
 		cursorInfoRozvrh.moveToFirst();
@@ -94,6 +107,7 @@ public class DataStorageDatabase {
 	 * zo stringu vrati verziu
 	 */
 	private String getVersionFromString(String input) {
+		Log.d("dostal som sa tu", "kontroal");	
 		Scanner scan = new Scanner(input);
 		String frg = null;
 		String delims = "[=]";
@@ -112,10 +126,10 @@ public class DataStorageDatabase {
 	 * Zistujeme verziu xml v internom subore rozvrh.xml
 	 */
 	public String checkVersionFile() throws IOException {
-		InputStream nacitanySubor = null;
-		nacitanySubor = context.getResources().openRawResource(R.raw.sqlfile);
+		InputStreamReader nacitanySubor = new InputStreamReader(context
+				.getResources().openRawResource(R.raw.sqlfile));
 		int len = 100;
-		byte[] buffer = new byte[len];
+		char[] buffer = new char[len];
 		if (nacitanySubor.read(buffer, 0, len) == -1) {
 			Log.d("buffer", "buffer je null");
 			return "";
@@ -127,6 +141,7 @@ public class DataStorageDatabase {
 	 * Zistujeme verziu xml na internete
 	 */
 	public String checkVersionInternet() throws MalformedURLException {
+		
 		ThreadInternet ti = new ThreadInternet(100);
 		ti.run();
 		String data = ti.getDataFromInternet();
