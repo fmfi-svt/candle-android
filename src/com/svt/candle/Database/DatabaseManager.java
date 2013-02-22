@@ -67,7 +67,7 @@ public class DatabaseManager {
 	private static final String COLUMN_HODINY_TYP = "typ";
 	private static final String COLUMN_HODINY_OLDID = "oldid";
 	private static final String COLUMN_HODINY_POZNAMKA = "poznamka";
-	
+
 	// tabulka pre id ucitelov, ktori ucia danu hodinu
 	private static final String TB_HODUCITEL = "hoducitel";
 	private static final String COLUMN_HODUCITEL_IDHODINY = "idHodiny";
@@ -324,7 +324,8 @@ public class DatabaseManager {
 				+ TB_HODKRUZOK + " k WHERE " + "h." + COLUMN_HODINY_TYP
 				+ " = m." + COLUMN_TYPYH_ID + " AND " + "p."
 				+ COLUMN_PREDMETY_ID + " = h." + COLUMN_HODINY_PREDMET
-				+ " AND h." + COLUMN_HODINY_ID + " = k." + COLUMN_HODKRUZOK_IDHODINY + " AND k."
+				+ " AND h." + COLUMN_HODINY_ID + " = k."
+				+ COLUMN_HODKRUZOK_IDHODINY + " AND k."
 				+ COLUMN_HODKRUZOK_IDKRUZKU + " = \"" + kruzok + "\"C\"";
 
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
@@ -359,53 +360,71 @@ public class DatabaseManager {
 		database.close();
 	}
 
-	public void insertTable(String string){
+	public void insertTable(String string) {
 		database = dbHelper.getWritableDatabase();
 		database.execSQL(string);
 	}
-	//testovanie tabuliek
-	public Cursor checkTable(String TB_NAME) {
-			database = dbHelper.getReadableDatabase();
-			final String MY_QUERY = "SELECT * FROM " + TB_NAME; 
 
-			Cursor cursor = database.rawQuery(MY_QUERY, null);
-			Log.d("cursor DBM", Integer.toString(cursor.getCount()));
-			database.close();
-//			cursor.moveToFirst();
-//			for (int i = 0; i < cursor.getCount(); i += 100) {
-//				
-//				for (int j = 0; j < cursor.getColumnCount(); j++) {
-//					Log.d("test",cursor.getColumnName(j) + " " +cursor.getString(j));
-//				}
-//				Log.d("test", "????????????????????????????");
-//				cursor.moveToNext();
-//			}
-			cursor.close();
-			return cursor;
+	// testovanie tabuliek
+	public Cursor checkTable(String TB_NAME) {
+		database = dbHelper.getReadableDatabase();
+		final String MY_QUERY = "SELECT * FROM " + TB_NAME;
+
+		Cursor cursor = database.rawQuery(MY_QUERY, null);
+		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
+		database.close();
+		// cursor.moveToFirst();
+		// for (int i = 0; i < cursor.getCount(); i += 100) {
+		//
+		// for (int j = 0; j < cursor.getColumnCount(); j++) {
+		// Log.d("test",cursor.getColumnName(j) + " " +cursor.getString(j));
+		// }
+		// Log.d("test", "????????????????????????????");
+		// cursor.moveToNext();
+		// }
+		cursor.close();
+		return cursor;
 
 	}
+
 	// vymaze databazu aj zo strukturou
 	public void zmamDatabazu() {
 		context.deleteDatabase(DATABASE_NAME);
 	}
 	
-	public static void copyFile(FileInputStream fromFile, FileOutputStream toFile) throws IOException {
-        FileChannel fromChannel = null;
-        FileChannel toChannel = null;
-        try {
-            fromChannel = fromFile.getChannel();
-            toChannel = toFile.getChannel();
-            fromChannel.transferTo(0, fromChannel.size(), toChannel);
-        } finally {
-            try {
-                if (fromChannel != null) {
-                    fromChannel.close();
-                }
-            } finally {
-                if (toChannel != null) {
-                    toChannel.close();
-                }
-            }
-        }
-    }
+	public Cursor searchByQuery(String query) {
+		database = dbHelper.getWritableDatabase();
+		Cursor cursor = database.rawQuery(query, null);
+		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
+		database.close();
+		return cursor;
+	}
+	
+	public Cursor findSimilarRooms(String room) {
+		final String MY_QUERY = "SELECT " + COLUMN_MIESTNOSTI_NAZOV + " FROM "
+				+ TB_MIESTNOSTI_NAME + " WHERE " + COLUMN_MIESTNOSTI_NAZOV
+				+ " LIKE \"" + room + "%\"";
+		return searchByQuery(MY_QUERY);
+	}
+
+	public static void copyFile(FileInputStream fromFile,
+			FileOutputStream toFile) throws IOException {
+		FileChannel fromChannel = null;
+		FileChannel toChannel = null;
+		try {
+			fromChannel = fromFile.getChannel();
+			toChannel = toFile.getChannel();
+			fromChannel.transferTo(0, fromChannel.size(), toChannel);
+		} finally {
+			try {
+				if (fromChannel != null) {
+					fromChannel.close();
+				}
+			} finally {
+				if (toChannel != null) {
+					toChannel.close();
+				}
+			}
+		}
+	}
 }
