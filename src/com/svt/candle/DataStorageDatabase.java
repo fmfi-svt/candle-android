@@ -193,8 +193,13 @@ public class DataStorageDatabase {
 		}
 	}
 
+	public ArrayList<String> getSimilarStrings(String string){
+		return null;
+	}
 	/**
 	 * Vyhlada data v databaze podla miestnosti a vrati objekt TimeTable
+	 * @return {@link TimeTable}
+	 * @param string room_name
 	 */
 	public TimeTable getTimeTableAccordingTORoom(String room) {
 		lessons = new ArrayList<Lesson>();

@@ -1,72 +1,98 @@
 package com.svt.candle;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
-public class SearchActivity extends Activity {
-	EditText getNick = null;
-	Button search = null;
-	DataStorageDatabase dataStorage = null;
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        
-    }
+public class SearchActivity extends FragmentActivity {
+	private EditText getNick = null;
+	private Button search = null;
+	private DataStorageDatabase dataStorage = null;
+	private Context thisContext = this;
+	private ListView mainListView = null;
+	private ArrayAdapter<String> listAdapter = null;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_search, menu);
-        return true;
-    }
-    
-    @Override
-    protected void onResume() {
-    	super.onResume();
-    	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_search);
+		// content v dataStorage je MainActivity lebo ta ho prva vytvorila
+		dataStorage = DataStorageDatabase.getDataStorageDatabaseInstance(this);
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_search, menu);
+		return true;
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
 		search = (Button) findViewById(R.id.buttonSearch);
 		search.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				
-				
-				
-				
-				if (amIConnectedToInternet()) {
-					try {
-						getNick = (EditText) findViewById(R.id.editTextSearch);
-						nickUrl = getNick.getText().toString();
-						//createTimeTable();
+				try {
+					getNick = (EditText) findViewById(R.id.editTextSearch);
+					if (getNick.length() == 0) {
+						Toast toastNoText = Toast.makeText(thisContext,
+								R.string.no_text, Toast.LENGTH_SHORT);
+						toastNoText.show();
+					} else {
+						// Find the ListView resource.
+						mainListView = (ListView) findViewById(R.id.searchList);
+
+						// Create and populate a List of planet names.
 						
-						if(dataStorage.getTimeTable() != null){
-							if(!dataStorage.getTimeTable().isEmpty()){
-								printTimeTable();
-							} else{
-								final Toast toast = Toast.makeText(getApplicationContext(),
-										"Timetable is empty!", Toast.LENGTH_SHORT);
-								toast.show();
-							}
-						} else {
-							final Toast toast = Toast.makeText(getApplicationContext(),
-									"Timetable does not exist!", Toast.LENGTH_SHORT);
-							toast.show();
-						}
+						ArrayList<String> planetList = new ArrayList<String>();
+
 						
-					} catch (Exception e) {
-						Log.w("Debug", e.getMessage());
+						// Create ArrayAdapter using the planet list.
+						listAdapter = new ArrayAdapter<String>(thisContext,
+								R.layout.row_search_layout, planetList);
+						
+						listAdapter.add("Ceres");
+						listAdapter.add("Pluto");
+						listAdapter.add("Haumea");
+						listAdapter.add("Makemake");
+						listAdapter.add("Eris");
+
+						// Set the ArrayAdapter as the ListView's adapter.
+						mainListView.setAdapter(listAdapter);
+						mainListView.setClickable(true);
+
+						mainListView
+								.setOnItemClickListener(new OnItemClickListener() {
+
+									@Override
+									public void onItemClick(
+											AdapterView<?> arg0, View arg1,
+											int arg2, long arg3) {
+									}
+
+								});
 					}
-				} else {
-					final Toast toast = Toast.makeText(getApplicationContext(),
-							"You have not internet access", Toast.LENGTH_SHORT);
-					toast.show();
+
+				} catch (Exception e) {
+					Log.w("Debug", e.getMessage());
 				}
 			}
 		});
-    	
-    	
-    }
+	}
 }
