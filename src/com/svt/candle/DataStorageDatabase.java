@@ -194,8 +194,18 @@ public class DataStorageDatabase {
 	}
 
 	public ArrayList<String> getSimilarStrings(String string){
-		return null;
+		
+		ArrayList<String> strings = new ArrayList<String>(); 
+		Cursor cursor = dbManager.getSimilarRooms(string);
+		cursor.moveToFirst();
+		for (int i = 0; i < cursor.getCount(); i++) {
+			strings.add(cursor.getString(0));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return strings;
 	}
+	
 	/**
 	 * Vyhlada data v databaze podla miestnosti a vrati objekt TimeTable
 	 * @return {@link TimeTable}

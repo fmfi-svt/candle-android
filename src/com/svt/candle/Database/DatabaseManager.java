@@ -400,10 +400,24 @@ public class DatabaseManager {
 		return cursor;
 	}
 	
-	public Cursor findSimilarRooms(String room) {
+	public Cursor getSimilarRooms(String room) {
 		final String MY_QUERY = "SELECT " + COLUMN_MIESTNOSTI_NAZOV + " FROM "
 				+ TB_MIESTNOSTI_NAME + " WHERE " + COLUMN_MIESTNOSTI_NAZOV
 				+ " LIKE \"" + room + "%\"";
+		return searchByQuery(MY_QUERY);
+	}
+	
+	public Cursor getSimilarTeachers(String teacher) {
+		final String MY_QUERY = "SELECT " + COLUMN_UCITELIA_PRIEZVISKO + " FROM "
+				+ TB_UCITELIA_NAME + " WHERE " + COLUMN_UCITELIA_PRIEZVISKO
+				+ " LIKE \"" + teacher + "%\"";
+		return searchByQuery(MY_QUERY);
+	}
+	
+	public Cursor getSimilarClass(String string) {
+		final String MY_QUERY = "SELECT DISTINCT " + COLUMN_HODKRUZOK_IDKRUZKU + " FROM "
+				+ TB_HODKRUZOK + " WHERE " + COLUMN_HODKRUZOK_IDKRUZKU
+				+ " LIKE \"" + string + "%\"";
 		return searchByQuery(MY_QUERY);
 	}
 

@@ -6,8 +6,10 @@ import java.util.Arrays;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -44,7 +46,27 @@ public class SearchActivity extends FragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		
+//		for (int current = 0; current < itemCount; current++) {
+//			   View view = inflater.inflate(R.id.searchList, , false);
+//
+//			   //initialize the view
+//
+//			   view.setOnClickListener(new OnClickListener() {
+//
+//			      @Override
+//			      public void onClick(View v) {
+//			          Intent intent = new Intent(getApplicationContext(), CLASS_TO_START)
+//			          startActivity(intent);
+//			      }
+//			   });
+//			   viewGroup.addView(view);
+//			   if (current < itemCount - 1) {
+//			      inflater.inflate(R.layout.line, viewGroup);
+//			   }
+//			}
+		
 		search = (Button) findViewById(R.id.buttonSearch);
 		search.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -55,28 +77,20 @@ public class SearchActivity extends FragmentActivity {
 								R.string.no_text, Toast.LENGTH_SHORT);
 						toastNoText.show();
 					} else {
+						Log.d("overenie", getNick.getText().toString());
 						// Find the ListView resource.
 						mainListView = (ListView) findViewById(R.id.searchList);
-
-						// Create and populate a List of planet names.
-						
-						ArrayList<String> planetList = new ArrayList<String>();
-
+						ArrayList<String> vypis = dataStorage.getSimilarStrings(getNick.getText().toString());
+							
 						
 						// Create ArrayAdapter using the planet list.
 						listAdapter = new ArrayAdapter<String>(thisContext,
-								R.layout.row_search_layout, planetList);
-						
-						listAdapter.add("Ceres");
-						listAdapter.add("Pluto");
-						listAdapter.add("Haumea");
-						listAdapter.add("Makemake");
-						listAdapter.add("Eris");
+								R.layout.row_search_layout, vypis);
 
 						// Set the ArrayAdapter as the ListView's adapter.
 						mainListView.setAdapter(listAdapter);
 						mainListView.setClickable(true);
-
+						
 						mainListView
 								.setOnItemClickListener(new OnItemClickListener() {
 
@@ -84,6 +98,7 @@ public class SearchActivity extends FragmentActivity {
 									public void onItemClick(
 											AdapterView<?> arg0, View arg1,
 											int arg2, long arg3) {
+										mainListView.findViewById(1).setBackgroundColor(Color.RED);
 									}
 
 								});
