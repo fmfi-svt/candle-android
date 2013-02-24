@@ -98,7 +98,6 @@ public class SearchActivity extends FragmentActivity {
 									public void onItemClick(
 											AdapterView<?> arg0, View arg1,
 											int arg2, long arg3) {
-										mainListView.findViewById(1).setBackgroundColor(Color.RED);
 									}
 
 								});

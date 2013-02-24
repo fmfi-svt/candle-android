@@ -16,8 +16,8 @@ import android.provider.CalendarContract.Instances;
 import android.util.Log;
 
 /**
- * Trieda starajuca sa o ziskanie a odovzdavanie dat
- * otestovat - verzia check file,internet a parsovanie file,internet
+ * Trieda starajuca sa o ziskanie a odovzdavanie dat otestovat - verzia check
+ * file,internet a parsovanie file,internet
  */
 public class DataStorageDatabase {
 	private Context context;
@@ -25,9 +25,10 @@ public class DataStorageDatabase {
 	private ArrayList<Lesson> lessons = null;
 	private DatabaseManager dbManager = null;
 	private static DataStorageDatabase instance = null;
-	
-	public static DataStorageDatabase getDataStorageDatabaseInstance(Context context){
-		if(instance != null){
+
+	public static DataStorageDatabase getDataStorageDatabaseInstance(
+			Context context) {
+		if (instance != null) {
 			return instance;
 		} else {
 			try {
@@ -38,7 +39,7 @@ public class DataStorageDatabase {
 		}
 		return instance;
 	}
-	
+
 	private DataStorageDatabase(Context context) throws IOException {
 		this.context = context;
 		dbManager = new DatabaseManager(context);
@@ -107,7 +108,7 @@ public class DataStorageDatabase {
 	 * zo stringu vrati verziu
 	 */
 	private String getVersionFromString(String input) {
-		Log.d("dostal som sa tu", "kontroal");	
+		Log.d("dostal som sa tu", "kontroal");
 		Scanner scan = new Scanner(input);
 		String frg = null;
 		String delims = "[=]";
@@ -141,7 +142,7 @@ public class DataStorageDatabase {
 	 * Zistujeme verziu xml na internete
 	 */
 	public String checkVersionInternet() throws MalformedURLException {
-		
+
 		ThreadInternet ti = new ThreadInternet(100);
 		ti.run();
 		String data = ti.getDataFromInternet();
@@ -193,9 +194,17 @@ public class DataStorageDatabase {
 		}
 	}
 
-	public ArrayList<String> getSimilarStrings(String string){
-		
-		ArrayList<String> strings = new ArrayList<String>(); 
+	/**
+	 * Volaná SearchActivity, dostane string a nájde vsetky kruzky, prizviska a
+	 * miestnosti ktoreho je prefixom
+	 * 
+	 * @return {@link ArrayList}
+	 * @param String hladanyString
+	 */
+	public ArrayList<String> getSimilarStrings(String string) {
+
+		ArrayList<String> strings = new ArrayList<String>();
+		// pridanie
 		Cursor cursor = dbManager.getSimilarRooms(string);
 		cursor.moveToFirst();
 		for (int i = 0; i < cursor.getCount(); i++) {
@@ -203,13 +212,31 @@ public class DataStorageDatabase {
 			cursor.moveToNext();
 		}
 		cursor.close();
+		// pridanie kruzkov do arraylistu
+		Cursor cursorClass = dbManager.getSimilarClass(string);
+		cursorClass.moveToFirst();
+		for (int i = 0; i < cursorClass.getCount(); i++) {
+			strings.add(cursorClass.getString(0));
+			cursorClass.moveToNext();
+		}
+		cursorClass.close();
+		// pridanie ucitelov do arraylistu
+				Cursor cursorTeacher = dbManager.getSimilarTeachers(string);
+				cursorTeacher.moveToFirst();
+				for (int i = 0; i < cursorTeacher.getCount(); i++) {
+					strings.add(cursorTeacher.getString(0));
+					cursorTeacher.moveToNext();
+				}
+				cursorTeacher.close();
 		return strings;
 	}
-	
+
 	/**
 	 * Vyhlada data v databaze podla miestnosti a vrati objekt TimeTable
+	 * 
 	 * @return {@link TimeTable}
-	 * @param string room_name
+	 * @param string
+	 *            room_name
 	 */
 	public TimeTable getTimeTableAccordingTORoom(String room) {
 		lessons = new ArrayList<Lesson>();

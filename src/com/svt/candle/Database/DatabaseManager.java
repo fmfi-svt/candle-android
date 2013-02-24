@@ -397,6 +397,7 @@ public class DatabaseManager {
 		Cursor cursor = database.rawQuery(query, null);
 		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
 		database.close();
+		cursor.close();
 		return cursor;
 	}
 	
