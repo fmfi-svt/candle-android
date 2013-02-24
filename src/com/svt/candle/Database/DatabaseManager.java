@@ -306,7 +306,7 @@ public class DatabaseManager {
 				+ " =\"" + room + "\" ";
 
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
-		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
+		Log.d("cursor searchLessonsByRoom", Integer.toString(cursor.getCount()));
 		database.close();
 		return cursor;
 	}
@@ -326,10 +326,35 @@ public class DatabaseManager {
 				+ COLUMN_PREDMETY_ID + " = h." + COLUMN_HODINY_PREDMET
 				+ " AND h." + COLUMN_HODINY_ID + " = k."
 				+ COLUMN_HODKRUZOK_IDHODINY + " AND k."
-				+ COLUMN_HODKRUZOK_IDKRUZKU + " = \"" + kruzok + "\"C\"";
+				+ COLUMN_HODKRUZOK_IDKRUZKU + " = \"" + kruzok + "\"";
+		
+		Cursor cursor = database.rawQuery(MY_QUERY, null);
+		Log.d("cursor searchLessonsByClass", Integer.toString(cursor.getCount()));
+		database.close();
+		return cursor;
+	}
+
+	// vyhladavanie v databaze podla ucitelov
+	public Cursor searchLessonsByTeacher(String ucitel) {
+		database = dbHelper.getReadableDatabase();
+		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
+				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
+				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
+				+ COLUMN_HODINY_MIESTNOST + ", m." + COLUMN_TYPYH_POPIS
+				+ ", p." + COLUMN_PREDMETY_NAZOV + ", h."
+				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME + " h , "
+				+ TB_TYPYH_NAME + " m , " + TB_PREDMETY_NAME + " p, "
+				+ TB_UCITELIA_NAME + " u, " + TB_HODUCITEL + " k WHERE " + "h."
+				+ COLUMN_HODINY_TYP + " = m." + COLUMN_TYPYH_ID + " AND "
+				+ "p." + COLUMN_PREDMETY_ID + " = h." + COLUMN_HODINY_PREDMET
+				+ " AND h." + COLUMN_HODINY_ID + " = k."
+				+ COLUMN_HODUCITEL_IDHODINY + " AND k."
+				+ COLUMN_HODUCITEL_IDUCITELA + " = u." + COLUMN_UCITELIA_ID
+				+ " AND u." + COLUMN_UCITELIA_PRIEZVISKO + " = \"" + ucitel
+				+ "\"";
 
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
-		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
+		Log.d("cursor searchLessonsByTeacher", Integer.toString(cursor.getCount()));
 		database.close();
 		return cursor;
 	}
@@ -391,34 +416,33 @@ public class DatabaseManager {
 	public void zmamDatabazu() {
 		context.deleteDatabase(DATABASE_NAME);
 	}
-	
+
 	public Cursor searchByQuery(String query) {
 		database = dbHelper.getWritableDatabase();
 		Cursor cursor = database.rawQuery(query, null);
 		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
 		database.close();
-		cursor.close();
 		return cursor;
 	}
-	
+
 	public Cursor getSimilarRooms(String room) {
 		final String MY_QUERY = "SELECT " + COLUMN_MIESTNOSTI_NAZOV + " FROM "
 				+ TB_MIESTNOSTI_NAME + " WHERE " + COLUMN_MIESTNOSTI_NAZOV
 				+ " LIKE \"" + room + "%\"";
 		return searchByQuery(MY_QUERY);
 	}
-	
+
 	public Cursor getSimilarTeachers(String teacher) {
-		final String MY_QUERY = "SELECT " + COLUMN_UCITELIA_PRIEZVISKO + " FROM "
-				+ TB_UCITELIA_NAME + " WHERE " + COLUMN_UCITELIA_PRIEZVISKO
-				+ " LIKE \"" + teacher + "%\"";
+		final String MY_QUERY = "SELECT " + COLUMN_UCITELIA_PRIEZVISKO
+				+ " FROM " + TB_UCITELIA_NAME + " WHERE "
+				+ COLUMN_UCITELIA_PRIEZVISKO + " LIKE \"" + teacher + "%\"";
 		return searchByQuery(MY_QUERY);
 	}
-	
+
 	public Cursor getSimilarClass(String string) {
-		final String MY_QUERY = "SELECT DISTINCT " + COLUMN_HODKRUZOK_IDKRUZKU + " FROM "
-				+ TB_HODKRUZOK + " WHERE " + COLUMN_HODKRUZOK_IDKRUZKU
-				+ " LIKE \"" + string + "%\"";
+		final String MY_QUERY = "SELECT DISTINCT " + COLUMN_HODKRUZOK_IDKRUZKU
+				+ " FROM " + TB_HODKRUZOK + " WHERE "
+				+ COLUMN_HODKRUZOK_IDKRUZKU + " LIKE \"" + string + "%\"";
 		return searchByQuery(MY_QUERY);
 	}
 

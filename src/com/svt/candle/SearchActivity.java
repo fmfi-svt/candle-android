@@ -27,6 +27,7 @@ public class SearchActivity extends FragmentActivity {
 	private Context thisContext = this;
 	private ListView mainListView = null;
 	private ArrayAdapter<String> listAdapter = null;
+	ArrayList<String> vypis = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,27 +47,6 @@ public class SearchActivity extends FragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
-//		for (int current = 0; current < itemCount; current++) {
-//			   View view = inflater.inflate(R.id.searchList, , false);
-//
-//			   //initialize the view
-//
-//			   view.setOnClickListener(new OnClickListener() {
-//
-//			      @Override
-//			      public void onClick(View v) {
-//			          Intent intent = new Intent(getApplicationContext(), CLASS_TO_START)
-//			          startActivity(intent);
-//			      }
-//			   });
-//			   viewGroup.addView(view);
-//			   if (current < itemCount - 1) {
-//			      inflater.inflate(R.layout.line, viewGroup);
-//			   }
-//			}
-		
 		search = (Button) findViewById(R.id.buttonSearch);
 		search.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -77,12 +57,9 @@ public class SearchActivity extends FragmentActivity {
 								R.string.no_text, Toast.LENGTH_SHORT);
 						toastNoText.show();
 					} else {
-						Log.d("overenie", getNick.getText().toString());
 						// Find the ListView resource.
 						mainListView = (ListView) findViewById(R.id.searchList);
-						ArrayList<String> vypis = dataStorage.getSimilarStrings(getNick.getText().toString());
-							
-						
+						vypis = dataStorage.getSimilarStrings(getNick.getText().toString());
 						// Create ArrayAdapter using the planet list.
 						listAdapter = new ArrayAdapter<String>(thisContext,
 								R.layout.row_search_layout, vypis);
@@ -98,13 +75,14 @@ public class SearchActivity extends FragmentActivity {
 									public void onItemClick(
 											AdapterView<?> arg0, View arg1,
 											int arg2, long arg3) {
+										TimeTable searched = dataStorage.getTimeTableAccordingTOString(vypis.get(arg2));
+										Log.d("vpis hladaneho rozvrhu",	 searched.timeTableToString(thisContext));
 									}
-
 								});
 					}
 
 				} catch (Exception e) {
-					Log.w("Debug", e.getMessage());
+					Log.w("Debug-SearchAct-onClick", e.getMessage());
 				}
 			}
 		});

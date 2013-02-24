@@ -199,19 +199,19 @@ public class DataStorageDatabase {
 	 * miestnosti ktoreho je prefixom
 	 * 
 	 * @return {@link ArrayList}
-	 * @param String hladanyString
+	 * @param String
+	 *            hladanyString
 	 */
 	public ArrayList<String> getSimilarStrings(String string) {
-
 		ArrayList<String> strings = new ArrayList<String>();
 		// pridanie
-		Cursor cursor = dbManager.getSimilarRooms(string);
-		cursor.moveToFirst();
-		for (int i = 0; i < cursor.getCount(); i++) {
-			strings.add(cursor.getString(0));
-			cursor.moveToNext();
+		Cursor cursorRoom = dbManager.getSimilarRooms(string);
+		if(cursorRoom.getColumnCount() != 0) cursorRoom.moveToFirst();
+		for (int i = 0; i < cursorRoom.getCount(); i++) {
+			strings.add(cursorRoom.getString(0));
+			cursorRoom.moveToNext();
 		}
-		cursor.close();
+		cursorRoom.close();
 		// pridanie kruzkov do arraylistu
 		Cursor cursorClass = dbManager.getSimilarClass(string);
 		cursorClass.moveToFirst();
@@ -221,13 +221,13 @@ public class DataStorageDatabase {
 		}
 		cursorClass.close();
 		// pridanie ucitelov do arraylistu
-				Cursor cursorTeacher = dbManager.getSimilarTeachers(string);
-				cursorTeacher.moveToFirst();
-				for (int i = 0; i < cursorTeacher.getCount(); i++) {
-					strings.add(cursorTeacher.getString(0));
-					cursorTeacher.moveToNext();
-				}
-				cursorTeacher.close();
+		Cursor cursorTeacher = dbManager.getSimilarTeachers(string);
+		cursorTeacher.moveToFirst();
+		for (int i = 0; i < cursorTeacher.getCount(); i++) {
+			strings.add(cursorTeacher.getString(0));
+			cursorTeacher.moveToNext();
+		}
+		cursorTeacher.close();
 		return strings;
 	}
 
@@ -258,6 +258,47 @@ public class DataStorageDatabase {
 
 		timeTable = new TimeTable(lessons);
 		return timeTable;
+	}
 
+	/**
+	 * Vyhlada data v databaze podla nazvu- kruzok, miestnost alebo ucitela a
+	 * vrati objekt TimeTable
+	 * 
+	 * @return {@link TimeTable}
+	 * @param string
+	 *            room_name
+	 */
+	public TimeTable getTimeTableAccordingTOString(String string) {
+		lessons = new ArrayList<Lesson>();
+
+		Cursor cursor = null;
+		// naplnime cursor podla stringu, ktoreho typ nevieme urcit, ale bude
+		// prave jeden
+		cursor = dbManager.searchLessonsByRoom(string);
+		if (cursor.getCount() == 0) {
+			cursor.close();
+			cursor = dbManager.searchLessonsByClass(string);
+		}
+
+		if (cursor.getCount() == 0) {
+			cursor.close();
+			cursor = dbManager.searchLessonsByTeacher(string);
+		}
+
+		Log.d("cursor", "pocet riadkov = " + cursor.getCount());
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Lesson lesson = new Lesson(cursor.getString(0),
+					cursor.getString(1), cursor.getString(2),
+					Integer.parseInt(cursor.getString(3)), cursor.getString(4),
+					cursor.getString(5), cursor.getString(6),
+					cursor.getString(7));
+			lessons.add(lesson);
+			cursor.moveToNext();
+		}
+		cursor.close();
+
+		timeTable = new TimeTable(lessons);
+		return timeTable;
 	}
 }
