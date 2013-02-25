@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
 	
 	DataStorageDatabase dataStorage = null;
 	// rozvrh zobrazujuci sa vzdy na zaciatku
-	TimeTable current = null;
+	public static TimeTable current = null;
 	
 	
 	/**
@@ -67,9 +67,6 @@ public class MainActivity extends Activity {
 			public boolean onMenuItemClick(MenuItem item) {
 				Log.d("search", "funguje tlacitko");
 				Intent myIntent = new Intent(MainActivity.this, SearchActivity.class);
-//				Serializable data = new Serializable() {
-//					
-//				};
 				
 				startActivity(myIntent);
 				return false;
@@ -95,9 +92,15 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-
-
+		// kontrola, ci sme vyhladali, nejaky iny rozvrh, ak ano zobrazujeme ten
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+		    String searchedString = extras.getString("searchedString");
+		    TimeTable searched = dataStorage.getTimeTableAccordingTOString(searchedString);
+			current = searched;
+		}
+		Log.d("resume", "vykonal sa resume");
+		Log.d("resume", current.timeTableToString(this));
 		printTimeTable(current);
 	}
 }

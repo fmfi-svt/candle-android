@@ -6,6 +6,7 @@ import java.util.Arrays;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -75,8 +76,14 @@ public class SearchActivity extends FragmentActivity {
 									public void onItemClick(
 											AdapterView<?> arg0, View arg1,
 											int arg2, long arg3) {
-										TimeTable searched = dataStorage.getTimeTableAccordingTOString(vypis.get(arg2));
-										Log.d("vpis hladaneho rozvrhu",	 searched.timeTableToString(thisContext));
+//										TimeTable searched = dataStorage.getTimeTableAccordingTOString(vypis.get(arg2));
+//										MainActivity.current = searched;
+//										
+//										Log.d("vpis hladaneho rozvrhu",	 MainActivity.current.timeTableToString(thisContext));
+										Intent myIntent = new Intent(SearchActivity.this, MainActivity.class);
+										myIntent.putExtra("searchedString", vypis.get(arg2));
+										startActivity(myIntent);
+										finish();
 									}
 								});
 					}
