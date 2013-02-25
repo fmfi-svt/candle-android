@@ -94,4 +94,12 @@ public class SearchActivity extends FragmentActivity {
 			}
 		});
 	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		Intent backIntent = new Intent(SearchActivity.this, MainActivity.class);
+		startActivity(backIntent);
+		finish();
+	}
 }

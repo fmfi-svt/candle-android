@@ -69,6 +69,7 @@ public class MainActivity extends Activity {
 				Intent myIntent = new Intent(MainActivity.this, SearchActivity.class);
 				
 				startActivity(myIntent);
+				finish();
 				return false;
 			}
 		};
@@ -103,4 +104,5 @@ public class MainActivity extends Activity {
 		Log.d("resume", current.timeTableToString(this));
 		printTimeTable(current);
 	}
+	
 }
