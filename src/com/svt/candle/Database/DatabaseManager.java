@@ -162,7 +162,10 @@ public class DatabaseManager {
 					+ " TEXT," + COLUMN_INFO_SKOLROK + " TEXT,"
 					+ COLUMN_INFO_SEMESTER + " TEXT);";
 			db.execSQL(createQuery);
-
+			createQuery = "CREATE INDEX i1 ON "+ TB_HODKRUZOK +" ("+ COLUMN_HODKRUZOK_IDKRUZKU +");";
+			db.execSQL(createQuery);
+//			createQuery = "CREATE INDEX i2 ON "+ TB_HODINY_NAME +" ("+ COLUMN_HODINY_ID +");";
+//			db.execSQL(createQuery);
 		}
 
 		// nebudeme upravovat strukturu databazy
@@ -296,13 +299,10 @@ public class DatabaseManager {
 		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
 				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
 				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
-				+ COLUMN_HODINY_MIESTNOST + ", m." + COLUMN_TYPYH_POPIS
-				+ ", p." + COLUMN_PREDMETY_NAZOV + ", h."
-				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME + " h , "
-				+ TB_TYPYH_NAME + " m , " + TB_PREDMETY_NAME + " p WHERE "
-				+ "h." + COLUMN_HODINY_TYP + " = m." + COLUMN_TYPYH_ID
-				+ " AND " + "p." + COLUMN_PREDMETY_ID + " = h."
-				+ COLUMN_HODINY_PREDMET + " AND h." + COLUMN_HODINY_MIESTNOST
+				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP
+				+ ", h." + COLUMN_HODINY_PREDMET + ", h."
+				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME + " h WHERE "
+				+ " h." + COLUMN_HODINY_MIESTNOST
 				+ " =\"" + room + "\" ";
 
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
@@ -329,6 +329,7 @@ public class DatabaseManager {
 				+ COLUMN_HODKRUZOK_IDKRUZKU + " = \"" + kruzok + "\"";
 		
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
+	
 		Log.d("cursor searchLessonsByClass", Integer.toString(cursor.getCount()));
 		database.close();
 		return cursor;
@@ -340,18 +341,32 @@ public class DatabaseManager {
 		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
 				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
 				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
-				+ COLUMN_HODINY_MIESTNOST + ", m." + COLUMN_TYPYH_POPIS
-				+ ", p." + COLUMN_PREDMETY_NAZOV + ", h."
-				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME + " h , "
-				+ TB_TYPYH_NAME + " m , " + TB_PREDMETY_NAME + " p, "
-				+ TB_UCITELIA_NAME + " u, " + TB_HODUCITEL + " k WHERE " + "h."
-				+ COLUMN_HODINY_TYP + " = m." + COLUMN_TYPYH_ID + " AND "
-				+ "p." + COLUMN_PREDMETY_ID + " = h." + COLUMN_HODINY_PREDMET
-				+ " AND h." + COLUMN_HODINY_ID + " = k."
+				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP
+				+ ", h." + COLUMN_HODINY_PREDMET + ", h."
+				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME
+				+ " h , " 
+				+ TB_UCITELIA_NAME + " u, " + TB_HODUCITEL + " k WHERE " 
+				+ " h." + COLUMN_HODINY_ID + " = k."
 				+ COLUMN_HODUCITEL_IDHODINY + " AND k."
 				+ COLUMN_HODUCITEL_IDUCITELA + " = u." + COLUMN_UCITELIA_ID
 				+ " AND u." + COLUMN_UCITELIA_PRIEZVISKO + " = \"" + ucitel
 				+ "\"";
+
+		
+//		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
+//				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
+//				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
+//				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP
+//				+ ", p." + COLUMN_PREDMETY_NAZOV + ", h."
+//				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME
+//				+ " h , " + TB_PREDMETY_NAME + " p, "
+//				+ TB_UCITELIA_NAME + " u, " + TB_HODUCITEL + " k WHERE " 
+//				+ "p." + COLUMN_PREDMETY_ID + " = h." + COLUMN_HODINY_PREDMET
+//				+ " AND h." + COLUMN_HODINY_ID + " = k."
+//				+ COLUMN_HODUCITEL_IDHODINY + " AND k."
+//				+ COLUMN_HODUCITEL_IDUCITELA + " = u." + COLUMN_UCITELIA_ID
+//				+ " AND u." + COLUMN_UCITELIA_PRIEZVISKO + " = \"" + ucitel
+//				+ "\"";
 
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
 		Log.d("cursor searchLessonsByTeacher", Integer.toString(cursor.getCount()));

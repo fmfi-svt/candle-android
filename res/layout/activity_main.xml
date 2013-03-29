@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:maxLines="30"
         android:layout_marginTop="3dp"
-        android:layout_below="@+id/editTextSearch"
         android:scrollbars="vertical" />
 
 </RelativeLayout>

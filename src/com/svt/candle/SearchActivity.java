@@ -76,10 +76,6 @@ public class SearchActivity extends FragmentActivity {
 									public void onItemClick(
 											AdapterView<?> arg0, View arg1,
 											int arg2, long arg3) {
-//										TimeTable searched = dataStorage.getTimeTableAccordingTOString(vypis.get(arg2));
-//										MainActivity.current = searched;
-//										
-//										Log.d("vpis hladaneho rozvrhu",	 MainActivity.current.timeTableToString(thisContext));
 										Intent myIntent = new Intent(SearchActivity.this, MainActivity.class);
 										myIntent.putExtra("searchedString", vypis.get(arg2));
 										startActivity(myIntent);
@@ -87,7 +83,6 @@ public class SearchActivity extends FragmentActivity {
 									}
 								});
 					}
-
 				} catch (Exception e) {
 					Log.w("Debug-SearchAct-onClick", e.getMessage());
 				}

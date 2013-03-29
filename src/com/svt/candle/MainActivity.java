@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	TextView printTimeTable = null;
-	
+	Boolean hladalSom = false;
 	DataStorageDatabase dataStorage = null;
 	// rozvrh zobrazujuci sa vzdy na zaciatku
 	public static TimeTable current = null;
@@ -67,13 +67,11 @@ public class MainActivity extends Activity {
 			public boolean onMenuItemClick(MenuItem item) {
 				Log.d("search", "funguje tlacitko");
 				Intent myIntent = new Intent(MainActivity.this, SearchActivity.class);
-				
 				startActivity(myIntent);
 				finish();
 				return false;
 			}
 		};
-
 		searchMenuItem.setOnMenuItemClickListener(searchClickListener);
 		return true;
 	}
@@ -100,9 +98,11 @@ public class MainActivity extends Activity {
 		    TimeTable searched = dataStorage.getTimeTableAccordingTOString(searchedString);
 			current = searched;
 		}
+		
+//		Log.d("resume", current.timeTableToString(this));
 		Log.d("resume", "vykonal sa resume");
-		Log.d("resume", current.timeTableToString(this));
 		printTimeTable(current);
+		Log.d("resume","vytlacil sa rozvr");
 	}
 	
 }

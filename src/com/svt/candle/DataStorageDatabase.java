@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import com.svt.candle.Database.Database2;
 import com.svt.candle.Database.DatabaseManager;
 import android.content.Context;
 import android.database.Cursor;
@@ -23,7 +25,7 @@ public class DataStorageDatabase {
 	private Context context;
 	private TimeTable timeTable = null;
 	private ArrayList<Lesson> lessons = null;
-	private DatabaseManager dbManager = null;
+	private Database2 dbManager = null;
 	private static DataStorageDatabase instance = null;
 
 	public static DataStorageDatabase getDataStorageDatabaseInstance(
@@ -42,12 +44,14 @@ public class DataStorageDatabase {
 
 	private DataStorageDatabase(Context context) throws IOException {
 		this.context = context;
-		dbManager = new DatabaseManager(context);
+		dbManager = new Database2(context);
+		// iba pre testovanie
+				dbManager.zmamDatabazu();
+				 dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
 		// aby sa dalo z cursora citat pri kontrole
 		cursorInfoRozvrh.moveToFirst();
-		// iba pre testovanie
-		// dbManager.vymazRiadkyDatabazy();
+		
 		//
 		/*
 		 * kontrola - ak je databaza prazdna, pozrieme ci sme pripojeny na net,
@@ -69,11 +73,6 @@ public class DataStorageDatabase {
 				parseFromFile();
 			}
 			dbManager.checkTable("hodiny");
-			dbManager.checkTable("typy");
-			dbManager.checkTable("typymiestnosti");
-			dbManager.checkTable("ucitelia");
-			dbManager.checkTable("predmety");
-			dbManager.checkTable("miestnosti");
 			dbManager.checkTable("hodkruzok");
 			dbManager.checkTable("hoducitel");
 			dbManager.checkTable("info");
@@ -239,6 +238,7 @@ public class DataStorageDatabase {
 	 *            room_name
 	 */
 	public TimeTable getTimeTableAccordingTORoom(String room) {
+		Log.d("kontrola", "getTimeTableAccordingTORoom");
 		lessons = new ArrayList<Lesson>();
 
 		Cursor cursor = dbManager.searchLessonsByRoom(room);
@@ -270,7 +270,7 @@ public class DataStorageDatabase {
 	 */
 	public TimeTable getTimeTableAccordingTOString(String string) {
 		lessons = new ArrayList<Lesson>();
-
+		Log.d("najdeleny rozvrh", "od teraz !!!");
 		Cursor cursor = null;
 		// naplnime cursor podla stringu, ktoreho typ nevieme urcit, ale bude
 		// prave jeden
@@ -284,8 +284,7 @@ public class DataStorageDatabase {
 			cursor.close();
 			cursor = dbManager.searchLessonsByTeacher(string);
 		}
-
-		Log.d("cursor", "pocet riadkov = " + cursor.getCount());
+		Log.d("according string cursor", "pocet riadkov = " + cursor.getCount());
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Lesson lesson = new Lesson(cursor.getString(0),
