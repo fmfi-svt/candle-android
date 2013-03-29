@@ -15,8 +15,9 @@ public class Database2 {
 	private static final int DATABASE_VERSION = 1;
 
 	// tabulka pre hodiny
-	//(`id`, `den`, `zaciatok`, `koniec`, `miestnost`, `trvanie`, `predmet`, `ucitelia`, `kruzky`, `typ`, `kod_predmetu`,`kredity`, `rozsah`, 
-	//`kapacita_mistnosti`, `typ_miestnosti`) SELECT '328'
+	// (`id`, `den`, `zaciatok`, `koniec`, `miestnost`, `trvanie`, `predmet`,
+	// `ucitelia`, `kruzky`, `typ`, `kod_predmetu`,`kredity`, `rozsah`,
+	// `kapacita_mistnosti`, `typ_miestnosti`) SELECT '328'
 	private static final String TB_HODINY_NAME = "hodiny";
 	private static final String COLUMN_HODINY_ID = "id";
 	private static final String COLUMN_HODINY_DEN = "den";
@@ -33,9 +34,9 @@ public class Database2 {
 	private static final String COLUMN_HODINY_ROZSAH = "rozsah";
 	private static final String COLUMN_HODINY_KAPACITA_MIESTNOSTI = "kapacita_mistnosti";
 	private static final String COLUMN_HODINY_TYP_MIESTRNOSTI = "typ_miestnosti";
-	
+
 	// tabulka pre id ucitelov, ktori ucia danu hodinu
-	// (`idHodiny`, `idUcitela`, `katedra`, `meno`, `oddelenie`, `priezvisko`) 
+	// (`idHodiny`, `idUcitela`, `katedra`, `meno`, `oddelenie`, `priezvisko`)
 	private static final String TB_HODUCITEL = "hoducitel";
 	private static final String COLUMN_HODUCITEL_IDHODINY = "idHodiny";
 	private static final String COLUMN_HODUCITEL_IDUCITELA = "idUcitela";
@@ -43,7 +44,7 @@ public class Database2 {
 	private static final String COLUMN_HODUCITEL_MENO = "meno";
 	private static final String COLUMN_HODUCITEL_KATEDRA = "katedra";
 	private static final String COLUMN_HODUCITEL_ODDELENIE = "oddelenie";
-	
+
 	// tabulka pre id ucitelov, ktori ucia danu hodinu
 	private static final String TB_HODKRUZOK = "hodkruzok";
 	private static final String COLUMN_HODKRUZOK_IDHODINY = "idHodiny";
@@ -72,9 +73,11 @@ public class Database2 {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			String createQuery = null;
-			//(`id`, `den`, `zaciatok`, `koniec`, `miestnost`, `trvanie`, `predmet`, `ucitelia`, `kruzky`, `typ`, `kod_predmetu`,`kredity`, `rozsah`, 
-			//`kapacita_mistnosti`, `typ_miestnosti`) SELECT '328'
-			
+			// (`id`, `den`, `zaciatok`, `koniec`, `miestnost`, `trvanie`,
+			// `predmet`, `ucitelia`, `kruzky`, `typ`, `kod_predmetu`,`kredity`,
+			// `rozsah`,
+			// `kapacita_mistnosti`, `typ_miestnosti`) SELECT '328'
+
 			// vytvorenie tablulky hodiny
 			createQuery = "CREATE TABLE " + TB_HODINY_NAME + "("
 					+ COLUMN_HODINY_ID + " TEXT," + COLUMN_HODINY_DEN
@@ -83,14 +86,14 @@ public class Database2 {
 					+ " TEXT," + COLUMN_HODINY_TRVANIE + " TEXT,"
 					+ COLUMN_HODINY_PREDMET + " TEXT," + COLUMN_HODINY_UCITELIA
 					+ " TEXT," + COLUMN_HODINY_KRUZKY + " TEXT,"
-					+ COLUMN_HODINY_TYP + " TEXT,"
-					+ COLUMN_HODINY_KOD_PREDMETU + " TEXT,"
-					+ COLUMN_HODINY_KREDITY + " TEXT,"
+					+ COLUMN_HODINY_TYP + " TEXT," + COLUMN_HODINY_KOD_PREDMETU
+					+ " TEXT," + COLUMN_HODINY_KREDITY + " TEXT,"
 					+ COLUMN_HODINY_ROZSAH + " TEXT,"
 					+ COLUMN_HODINY_KAPACITA_MIESTNOSTI + " TEXT,"
 					+ COLUMN_HODINY_TYP_MIESTRNOSTI + " TEXT);";
 			db.execSQL(createQuery);
-			// vytvorenie tablulky hoducitel (`idHodiny`, `idUcitela`, `katedra`, `meno`, `oddelenie`, `priezvisko`)
+			// vytvorenie tablulky hoducitel (`idHodiny`, `idUcitela`,
+			// `katedra`, `meno`, `oddelenie`, `priezvisko`)
 			createQuery = "CREATE TABLE " + TB_HODUCITEL + "("
 					+ COLUMN_HODUCITEL_IDHODINY + " TEXT,"
 					+ COLUMN_HODUCITEL_IDUCITELA + " TEXT,"
@@ -110,9 +113,11 @@ public class Database2 {
 					+ " TEXT," + COLUMN_INFO_SKOLROK + " TEXT,"
 					+ COLUMN_INFO_SEMESTER + " TEXT);";
 			db.execSQL(createQuery);
-			createQuery = "CREATE INDEX i1 ON "+ TB_HODKRUZOK +" ("+ COLUMN_HODKRUZOK_IDKRUZKU +");";
+			createQuery = "CREATE INDEX i1 ON " + TB_HODKRUZOK + " ("
+					+ COLUMN_HODKRUZOK_IDKRUZKU + ");";
 			db.execSQL(createQuery);
-			createQuery = "CREATE INDEX i2 ON "+ TB_HODUCITEL +" ("+ COLUMN_HODUCITEL_PRIEZVISKO +");";
+			createQuery = "CREATE INDEX i2 ON " + TB_HODUCITEL + " ("
+					+ COLUMN_HODUCITEL_PRIEZVISKO + ");";
 			db.execSQL(createQuery);
 		}
 
@@ -121,17 +126,17 @@ public class Database2 {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		}
 	}
+
 	// vyhladavanie v databaze podla miestnosti
 	public Cursor searchLessonsByRoom(String room) {
 		database = dbHelper.getReadableDatabase();
 		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
 				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
 				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
-				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP
-				+ ", h." + COLUMN_HODINY_PREDMET + ", h."
-				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME + " h WHERE "
-				+ " h." + COLUMN_HODINY_MIESTNOST
-				+ " =\"" + room + "\" ";
+				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP + ", h."
+				+ COLUMN_HODINY_PREDMET + ", h." + COLUMN_HODINY_UCITELIA
+				+ " FROM " + TB_HODINY_NAME + " h WHERE " + " h."
+				+ COLUMN_HODINY_MIESTNOST + " =\"" + room + "\" ";
 
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
 		Log.d("cursor searchLessonsByRoom", Integer.toString(cursor.getCount()));
@@ -145,53 +150,53 @@ public class Database2 {
 		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
 				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
 				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
-				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP
-				+ ", h." + COLUMN_HODINY_PREDMET + ", h."
-				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME + " h , "
-				+ TB_HODKRUZOK + " k WHERE " 
-				+ "h." + COLUMN_HODINY_ID + " = k."
+				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP + ", h."
+				+ COLUMN_HODINY_PREDMET + ", h." + COLUMN_HODINY_UCITELIA
+				+ " FROM " + TB_HODINY_NAME + " h , " + TB_HODKRUZOK
+				+ " k WHERE " + "h." + COLUMN_HODINY_ID + " = k."
 				+ COLUMN_HODKRUZOK_IDHODINY + " AND k."
 				+ COLUMN_HODKRUZOK_IDKRUZKU + " = \"" + kruzok + "\"";
-		
+
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
-	
-		Log.d("cursor searchLessonsByClass", Integer.toString(cursor.getCount()));
+
+		Log.d("cursor searchLessonsByClass",
+				Integer.toString(cursor.getCount()));
 		database.close();
 		return cursor;
 	}
-//PRIDAT POROVNANIIE AJ PODLA MENA NIE LEN PODLA PRIEZVISKA!!!!!!!!!!
+
+	// PRIDAT POROVNANIIE AJ PODLA MENA NIE LEN PODLA PRIEZVISKA!!!!!!!!!!
 	// vyhladavanie v databaze podla ucitelov
 	public Cursor searchLessonsByTeacher(String ucitel) {
 		database = dbHelper.getReadableDatabase();
 		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
 				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
 				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
-				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP
-				+ ", h." + COLUMN_HODINY_PREDMET + ", h."
-				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME
-				+ " h , "  + TB_HODUCITEL + " k WHERE " 
-				+ "k."+ COLUMN_HODUCITEL_IDHODINY + " = h." + COLUMN_HODINY_ID
-				+ " AND k." + COLUMN_HODUCITEL_PRIEZVISKO + " = \"" + ucitel
-				+ "\"";
+				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP + ", h."
+				+ COLUMN_HODINY_PREDMET + ", h." + COLUMN_HODINY_UCITELIA
+				+ " FROM " + TB_HODINY_NAME + " h , " + TB_HODUCITEL
+				+ " k WHERE " + "k." + COLUMN_HODUCITEL_IDHODINY + " = h."
+				+ COLUMN_HODINY_ID + " AND k." + COLUMN_HODUCITEL_PRIEZVISKO
+				+ " = \"" + ucitel + "\"";
 
-		
-//		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
-//				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
-//				+ ", h." + COLUMN_HODINY_TRVANIE + ", h."
-//				+ COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP
-//				+ ", p." + COLUMN_PREDMETY_NAZOV + ", h."
-//				+ COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME
-//				+ " h , " + TB_PREDMETY_NAME + " p, "
-//				+ TB_UCITELIA_NAME + " u, " + TB_HODUCITEL + " k WHERE " 
-//				+ "p." + COLUMN_PREDMETY_ID + " = h." + COLUMN_HODINY_PREDMET
-//				+ " AND h." + COLUMN_HODINY_ID + " = k."
-//				+ COLUMN_HODUCITEL_IDHODINY + " AND k."
-//				+ COLUMN_HODUCITEL_IDUCITELA + " = u." + COLUMN_UCITELIA_ID
-//				+ " AND u." + COLUMN_UCITELIA_PRIEZVISKO + " = \"" + ucitel
-//				+ "\"";
+		// final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
+		// + COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
+		// + ", h." + COLUMN_HODINY_TRVANIE + ", h."
+		// + COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP
+		// + ", p." + COLUMN_PREDMETY_NAZOV + ", h."
+		// + COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME
+		// + " h , " + TB_PREDMETY_NAME + " p, "
+		// + TB_UCITELIA_NAME + " u, " + TB_HODUCITEL + " k WHERE "
+		// + "p." + COLUMN_PREDMETY_ID + " = h." + COLUMN_HODINY_PREDMET
+		// + " AND h." + COLUMN_HODINY_ID + " = k."
+		// + COLUMN_HODUCITEL_IDHODINY + " AND k."
+		// + COLUMN_HODUCITEL_IDUCITELA + " = u." + COLUMN_UCITELIA_ID
+		// + " AND u." + COLUMN_UCITELIA_PRIEZVISKO + " = \"" + ucitel
+		// + "\"";
 
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
-		Log.d("cursor searchLessonsByTeacher", Integer.toString(cursor.getCount()));
+		Log.d("cursor searchLessonsByTeacher",
+				Integer.toString(cursor.getCount()));
 		database.close();
 		return cursor;
 	}
@@ -258,16 +263,18 @@ public class Database2 {
 	}
 
 	public Cursor getSimilarRooms(String room) {
-		final String MY_QUERY = "SELECT DISTINCT " + COLUMN_HODINY_MIESTNOST + " FROM "
-				+ TB_HODINY_NAME + " WHERE " + COLUMN_HODINY_MIESTNOST
-				+ " LIKE \"" + room + "%\"";
+		final String MY_QUERY = "SELECT DISTINCT " + COLUMN_HODINY_MIESTNOST
+				+ " FROM " + TB_HODINY_NAME + " WHERE "
+				+ COLUMN_HODINY_MIESTNOST + " LIKE \"" + room + "%\"";
 		return searchByQuery(MY_QUERY);
 	}
-//DOKODIT AJ MENO, NECH JE TO PRESNE DANE!!!!!!!
+
+	// DOKODIT AJ MENO, NECH JE TO PRESNE DANE!!!!!!!
 	public Cursor getSimilarTeachers(String teacher) {
-		final String MY_QUERY = "SELECT DISTINCT " + COLUMN_HODUCITEL_PRIEZVISKO
+		final String MY_QUERY = "SELECT DISTINCT "
+				+ COLUMN_HODUCITEL_PRIEZVISKO + " , " + COLUMN_HODUCITEL_MENO
 				+ " FROM " + TB_HODUCITEL + " WHERE "
-				+ COLUMN_HODUCITEL_PRIEZVISKO  + " LIKE \"" + teacher + "%\"";
+				+ COLUMN_HODUCITEL_PRIEZVISKO + " LIKE \"" + teacher + "%\"";
 		return searchByQuery(MY_QUERY);
 	}
 

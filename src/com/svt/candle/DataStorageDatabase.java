@@ -46,8 +46,8 @@ public class DataStorageDatabase {
 		this.context = context;
 		dbManager = new Database2(context);
 		// iba pre testovanie
-				dbManager.zmamDatabazu();
-				 dbManager.vymazRiadkyDatabazy();
+//				dbManager.zmamDatabazu();
+//				 dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
 		// aby sa dalo z cursora citat pri kontrole
 		cursorInfoRozvrh.moveToFirst();
@@ -223,7 +223,7 @@ public class DataStorageDatabase {
 		Cursor cursorTeacher = dbManager.getSimilarTeachers(string);
 		cursorTeacher.moveToFirst();
 		for (int i = 0; i < cursorTeacher.getCount(); i++) {
-			strings.add(cursorTeacher.getString(0));
+			strings.add(cursorTeacher.getString(0) + " " + cursorTeacher.getString(1));
 			cursorTeacher.moveToNext();
 		}
 		cursorTeacher.close();
@@ -237,6 +237,9 @@ public class DataStorageDatabase {
 	 * @param string
 	 *            room_name
 	 */
+	
+	
+	
 	public TimeTable getTimeTableAccordingTORoom(String room) {
 		Log.d("kontrola", "getTimeTableAccordingTORoom");
 		lessons = new ArrayList<Lesson>();
@@ -268,21 +271,32 @@ public class DataStorageDatabase {
 	 * @param string
 	 *            room_name
 	 */
+	
+	
 	public TimeTable getTimeTableAccordingTOString(String string) {
 		lessons = new ArrayList<Lesson>();
 		Log.d("najdeleny rozvrh", "od teraz !!!");
 		Cursor cursor = null;
-		// naplnime cursor podla stringu, ktoreho typ nevieme urcit, ale bude
-		// prave jeden
-		cursor = dbManager.searchLessonsByRoom(string);
-		if (cursor.getCount() == 0) {
-			cursor.close();
-			cursor = dbManager.searchLessonsByClass(string);
-		}
-
-		if (cursor.getCount() == 0) {
-			cursor.close();
-			cursor = dbManager.searchLessonsByTeacher(string);
+		
+		Scanner scan = new Scanner(string);
+		String stringParsed = new String();
+		//ak string obsahuje 2 slova tak je to ucitel
+		if(scan.hasNext()){
+			stringParsed = scan.next();
+			if(scan.hasNext()){
+				String stringParsed2 = scan.next();
+				cursor = dbManager.searchLessonsByTeacher(string);
+			} else {
+				//ak string je jedno slovo a zacina na pismeno tak je to miestnost
+				if(Character.isLetter(stringParsed.charAt(0))){
+					cursor = dbManager.searchLessonsByRoom(string);
+				} else {
+					// ostava kruzok
+					cursor = dbManager.searchLessonsByClass(string);
+				}
+			}
+		} else {
+			Log.d("parsovanie stringu", "prazdny string");
 		}
 		Log.d("according string cursor", "pocet riadkov = " + cursor.getCount());
 		cursor.moveToFirst();
