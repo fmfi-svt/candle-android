@@ -46,8 +46,8 @@ public class DataStorageDatabase {
 		this.context = context;
 		dbManager = new Database2(context);
 		// iba pre testovanie
-//				dbManager.zmamDatabazu();
-//				 dbManager.vymazRiadkyDatabazy();
+				dbManager.zmamDatabazu();
+				 dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
 		// aby sa dalo z cursora citat pri kontrole
 		cursorInfoRozvrh.moveToFirst();
@@ -285,10 +285,10 @@ public class DataStorageDatabase {
 			stringParsed = scan.next();
 			if(scan.hasNext()){
 				String stringParsed2 = scan.next();
-				cursor = dbManager.searchLessonsByTeacher(string);
+				cursor = dbManager.searchLessonsByTeacher(stringParsed, stringParsed2);
 			} else {
 				//ak string je jedno slovo a zacina na pismeno tak je to miestnost
-				if(Character.isLetter(stringParsed.charAt(0))){
+				if(Character.isLetter(string.charAt(0))){
 					cursor = dbManager.searchLessonsByRoom(string);
 				} else {
 					// ostava kruzok

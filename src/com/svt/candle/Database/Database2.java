@@ -1,5 +1,7 @@
 package com.svt.candle.Database;
 
+import java.util.Locale;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -69,7 +71,7 @@ public class Database2 {
 		public MySqliteHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
-
+		
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			String createQuery = null;
@@ -119,6 +121,9 @@ public class Database2 {
 			createQuery = "CREATE INDEX i2 ON " + TB_HODUCITEL + " ("
 					+ COLUMN_HODUCITEL_PRIEZVISKO + ");";
 			db.execSQL(createQuery);
+			
+			// vyhadzuje chybu preco??
+			db.setLocale(new Locale("svk","svk"));
 		}
 
 		// nebudeme upravovat strukturu databazy
@@ -167,7 +172,7 @@ public class Database2 {
 
 	// PRIDAT POROVNANIIE AJ PODLA MENA NIE LEN PODLA PRIEZVISKA!!!!!!!!!!
 	// vyhladavanie v databaze podla ucitelov
-	public Cursor searchLessonsByTeacher(String ucitel) {
+	public Cursor searchLessonsByTeacher(String priezvisko, String meno) {
 		database = dbHelper.getReadableDatabase();
 		final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
 				+ COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
@@ -177,7 +182,8 @@ public class Database2 {
 				+ " FROM " + TB_HODINY_NAME + " h , " + TB_HODUCITEL
 				+ " k WHERE " + "k." + COLUMN_HODUCITEL_IDHODINY + " = h."
 				+ COLUMN_HODINY_ID + " AND k." + COLUMN_HODUCITEL_PRIEZVISKO
-				+ " = \"" + ucitel + "\"";
+				+ " = \"" + priezvisko + "\" AND k." + COLUMN_HODUCITEL_MENO
+				+ " = \"" + meno + "\"";
 
 		// final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
 		// + COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
@@ -269,12 +275,11 @@ public class Database2 {
 		return searchByQuery(MY_QUERY);
 	}
 
-	// DOKODIT AJ MENO, NECH JE TO PRESNE DANE!!!!!!!
 	public Cursor getSimilarTeachers(String teacher) {
 		final String MY_QUERY = "SELECT DISTINCT "
 				+ COLUMN_HODUCITEL_PRIEZVISKO + " , " + COLUMN_HODUCITEL_MENO
 				+ " FROM " + TB_HODUCITEL + " WHERE "
-				+ COLUMN_HODUCITEL_PRIEZVISKO + " LIKE \"" + teacher + "%\"";
+				+ COLUMN_HODUCITEL_PRIEZVISKO +  " LIKE \"" + teacher + "%\" COLLATE LOCALIZED";
 		return searchByQuery(MY_QUERY);
 	}
 
