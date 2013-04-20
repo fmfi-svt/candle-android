@@ -3,6 +3,15 @@
     <string name="app_name">Candle</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="menu_search">Hladaj</string>
+    <string name="title_activity_main">Candle</string>
+    <string name="hint_search">Zadaj skratku krúžku</string>
+    <string name="button_search">Search</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="no_text">Zadaj nejaky text</string>
+    <string name="title_activity_search2">Search2Activity</string>
+    <string name="title_activity_fragment1">Fragment1</string>
+    <string name="title_activity_favorites">FavoritesActivity</string>
+    <string name="title_activity_add_favorite">AddFavoriteActivity</string>
 
 </resources>
