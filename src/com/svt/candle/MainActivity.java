@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 				dataStorage = DataStorageDatabase.getDataStorageDatabaseInstance(this);
 			}
 			//provizorna nastavanie zatial
-			current = dataStorage.getTimeTableAccordingTORoom("A");
+			current = dataStorage.getTimeTableAccordingTOString("A");
 		} catch (Exception e) {
 			Log.w("Debug", e.getMessage());
 		}
@@ -61,8 +61,7 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		MenuItem searchMenuItem = menu.add("Search");
-		MenuItem.OnMenuItemClickListener searchClickListener = new OnMenuItemClickListener() {
-			
+		searchMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				Log.d("search", "funguje tlacitko");
@@ -71,8 +70,30 @@ public class MainActivity extends Activity {
 				finish();
 				return false;
 			}
-		};
-		searchMenuItem.setOnMenuItemClickListener(searchClickListener);
+		});
+		
+		MenuItem addFavoriteMenuItem = menu.add("Pridaj do oblubenych");
+		addFavoriteMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Log.d("addFavorite", "funguje tlacitko");
+				dataStorage.addFavoriteTimeTable(current.getId());
+				return false;
+			}
+		});
+		
+		MenuItem FavoritesMenuItem = menu.add("Oblubene");
+		FavoritesMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Log.d("Favorites", "funguje tlacitko");
+				Intent myIntent = new Intent(MainActivity.this, FavoritesActivity.class);
+				startActivity(myIntent);
+				finish();
+				return false;
+			}
+		});
+		
 		return true;
 	}
 	/**

@@ -8,8 +8,17 @@ import android.widget.Toast;
  * Class represent timetable.
  */
 public class TimeTable {
+	private String idTimetable = "";
 	ArrayList<Lesson> tLessons = new ArrayList<Lesson>();
 
+	public void setId(String id) {
+		idTimetable = id;
+	}
+	
+	public String getId() {
+		return idTimetable;
+	}
+	
 	//konstruktor pre DataStorageDatabase
 	public TimeTable(ArrayList<Lesson> timeTable) {
 		this.tLessons = timeTable;

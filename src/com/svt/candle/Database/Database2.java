@@ -1,7 +1,5 @@
 package com.svt.candle.Database;
 
-import java.util.Locale;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -51,6 +49,13 @@ public class Database2 {
 	private static final String TB_HODKRUZOK = "hodkruzok";
 	private static final String COLUMN_HODKRUZOK_IDHODINY = "idHodiny";
 	private static final String COLUMN_HODKRUZOK_IDKRUZKU = "idKruzku";
+
+	// tabulka pre oblubene rozvry
+	private static final String TB_OBLUBENE = "hodkruzok";
+	private static final String COLUMN_OBLUBENE_ID = "id";
+	private static final String COLUMN_OBLUBENE_IDHODINY = "idHodiny";
+	private static final String COLUMN_OBLUBENE_NAME = "name";
+
 	// tabulka pre info o rozvrhu
 	private static final String TB_INFO = "info";
 	private static final String COLUMN_INFO_VERZIA = "verzia";
@@ -71,7 +76,7 @@ public class Database2 {
 		public MySqliteHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
-		
+
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 			String createQuery = null;
@@ -94,6 +99,7 @@ public class Database2 {
 					+ COLUMN_HODINY_KAPACITA_MIESTNOSTI + " TEXT,"
 					+ COLUMN_HODINY_TYP_MIESTRNOSTI + " TEXT);";
 			db.execSQL(createQuery);
+
 			// vytvorenie tablulky hoducitel (`idHodiny`, `idUcitela`,
 			// `katedra`, `meno`, `oddelenie`, `priezvisko`)
 			createQuery = "CREATE TABLE " + TB_HODUCITEL + "("
@@ -104,26 +110,33 @@ public class Database2 {
 					+ COLUMN_HODUCITEL_ODDELENIE + " TEXT,"
 					+ COLUMN_HODUCITEL_PRIEZVISKO + " TEXT);";
 			db.execSQL(createQuery);
+
 			// vytvorenie tablulky hodkruzok
 			createQuery = "CREATE TABLE " + TB_HODKRUZOK + "("
 					+ COLUMN_HODKRUZOK_IDHODINY + " TEXT,"
 					+ COLUMN_HODKRUZOK_IDKRUZKU + " TEXT);";
 			db.execSQL(createQuery);
+
 			// vytvorenie tabulky info, sluzi na uchovanie verzie,skrok a
 			// semester
 			createQuery = "CREATE TABLE " + TB_INFO + "(" + COLUMN_INFO_VERZIA
 					+ " TEXT," + COLUMN_INFO_SKOLROK + " TEXT,"
 					+ COLUMN_INFO_SEMESTER + " TEXT);";
 			db.execSQL(createQuery);
+
+			// vytvorenie tabulky pre oblubene rozvrhy
+			createQuery = "CREATE TABLE " + TB_OBLUBENE + "("
+					+ COLUMN_OBLUBENE_ID + "  NOT NULL AUTO_INCREMENT,"
+					+ COLUMN_OBLUBENE_NAME + " TEXT);";
+			db.execSQL(createQuery);
+
+			// indexy na zrychlenie databzy
 			createQuery = "CREATE INDEX i1 ON " + TB_HODKRUZOK + " ("
 					+ COLUMN_HODKRUZOK_IDKRUZKU + ");";
 			db.execSQL(createQuery);
 			createQuery = "CREATE INDEX i2 ON " + TB_HODUCITEL + " ("
 					+ COLUMN_HODUCITEL_PRIEZVISKO + ");";
 			db.execSQL(createQuery);
-			
-			// vyhadzuje chybu preco??
-			db.setLocale(new Locale("svk","svk"));
 		}
 
 		// nebudeme upravovat strukturu databazy
@@ -185,21 +198,6 @@ public class Database2 {
 				+ " = \"" + priezvisko + "\" AND k." + COLUMN_HODUCITEL_MENO
 				+ " = \"" + meno + "\"";
 
-		// final String MY_QUERY = "SELECT h." + COLUMN_HODINY_DEN + ", h."
-		// + COLUMN_HODINY_ZACIATOK + ", h." + COLUMN_HODINY_KONIEC
-		// + ", h." + COLUMN_HODINY_TRVANIE + ", h."
-		// + COLUMN_HODINY_MIESTNOST + ", h." + COLUMN_HODINY_TYP
-		// + ", p." + COLUMN_PREDMETY_NAZOV + ", h."
-		// + COLUMN_HODINY_UCITELIA + " FROM " + TB_HODINY_NAME
-		// + " h , " + TB_PREDMETY_NAME + " p, "
-		// + TB_UCITELIA_NAME + " u, " + TB_HODUCITEL + " k WHERE "
-		// + "p." + COLUMN_PREDMETY_ID + " = h." + COLUMN_HODINY_PREDMET
-		// + " AND h." + COLUMN_HODINY_ID + " = k."
-		// + COLUMN_HODUCITEL_IDHODINY + " AND k."
-		// + COLUMN_HODUCITEL_IDUCITELA + " = u." + COLUMN_UCITELIA_ID
-		// + " AND u." + COLUMN_UCITELIA_PRIEZVISKO + " = \"" + ucitel
-		// + "\"";
-
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
 		Log.d("cursor searchLessonsByTeacher",
 				Integer.toString(cursor.getCount()));
@@ -214,7 +212,6 @@ public class Database2 {
 		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
 		database.close();
 		return cursor;
-
 	}
 
 	// zmaze vsetky riadky tabuliek, ale zachova sa struktura = nevola sa
@@ -279,7 +276,7 @@ public class Database2 {
 		final String MY_QUERY = "SELECT DISTINCT "
 				+ COLUMN_HODUCITEL_PRIEZVISKO + " , " + COLUMN_HODUCITEL_MENO
 				+ " FROM " + TB_HODUCITEL + " WHERE "
-				+ COLUMN_HODUCITEL_PRIEZVISKO +  " LIKE \"" + teacher + "%\" COLLATE LOCALIZED";
+				+ COLUMN_HODUCITEL_PRIEZVISKO + " LIKE \"" + teacher + "%\"";
 		return searchByQuery(MY_QUERY);
 	}
 
@@ -287,6 +284,18 @@ public class Database2 {
 		final String MY_QUERY = "SELECT DISTINCT " + COLUMN_HODKRUZOK_IDKRUZKU
 				+ " FROM " + TB_HODKRUZOK + " WHERE "
 				+ COLUMN_HODKRUZOK_IDKRUZKU + " LIKE \"" + string + "%\"";
+		return searchByQuery(MY_QUERY);
+	}
+
+	public void addFavoriteTimeTable(String name) {
+		final String MY_QUERY = "INSERT INTO " + TB_OBLUBENE
+				+ " VALUES (null, " + name+ ")";
+		database.execSQL(MY_QUERY);
+	}
+	
+	public Cursor giveNamesFromFavorites() {
+		final String MY_QUERY = "SELECT DISTINCT " + COLUMN_OBLUBENE_NAME
+				+ " FROM " + TB_OBLUBENE;
 		return searchByQuery(MY_QUERY);
 	}
 }

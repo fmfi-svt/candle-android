@@ -2,19 +2,16 @@ package com.svt.candle;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.svt.candle.Database.Database2;
-import com.svt.candle.Database.DatabaseManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.provider.CalendarContract.Instances;
 import android.util.Log;
 
 /**
@@ -22,6 +19,7 @@ import android.util.Log;
  * file,internet a parsovanie file,internet
  */
 public class DataStorageDatabase {
+	
 	private Context context;
 	private TimeTable timeTable = null;
 	private ArrayList<Lesson> lessons = null;
@@ -46,13 +44,12 @@ public class DataStorageDatabase {
 		this.context = context;
 		dbManager = new Database2(context);
 		// iba pre testovanie
-				dbManager.zmamDatabazu();
-				 dbManager.vymazRiadkyDatabazy();
+//				dbManager.zmamDatabazu();
+//				 dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
 		// aby sa dalo z cursora citat pri kontrole
 		cursorInfoRozvrh.moveToFirst();
 		
-		//
 		/*
 		 * kontrola - ak je databaza prazdna, pozrieme ci sme pripojeny na net,
 		 * ak nie parsujeme interny subor, ak ano - parsujeme verziu na
@@ -231,39 +228,6 @@ public class DataStorageDatabase {
 	}
 
 	/**
-	 * Vyhlada data v databaze podla miestnosti a vrati objekt TimeTable
-	 * 
-	 * @return {@link TimeTable}
-	 * @param string
-	 *            room_name
-	 */
-	
-	
-	
-	public TimeTable getTimeTableAccordingTORoom(String room) {
-		Log.d("kontrola", "getTimeTableAccordingTORoom");
-		lessons = new ArrayList<Lesson>();
-
-		Cursor cursor = dbManager.searchLessonsByRoom(room);
-
-		Log.d("cursor", "pocet riadkov = " + cursor.getCount());
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Lesson lesson = new Lesson(cursor.getString(0),
-					cursor.getString(1), cursor.getString(2),
-					Integer.parseInt(cursor.getString(3)), cursor.getString(4),
-					cursor.getString(5), cursor.getString(6),
-					cursor.getString(7));
-			lessons.add(lesson);
-			cursor.moveToNext();
-		}
-		cursor.close();
-
-		timeTable = new TimeTable(lessons);
-		return timeTable;
-	}
-
-	/**
 	 * Vyhlada data v databaze podla nazvu- kruzok, miestnost alebo ucitela a
 	 * vrati objekt TimeTable
 	 * 
@@ -271,9 +235,8 @@ public class DataStorageDatabase {
 	 * @param string
 	 *            room_name
 	 */
-	
-	
 	public TimeTable getTimeTableAccordingTOString(String string) {
+		String idTimetable = "";
 		lessons = new ArrayList<Lesson>();
 		Log.d("najdeleny rozvrh", "od teraz !!!");
 		Cursor cursor = null;
@@ -282,6 +245,7 @@ public class DataStorageDatabase {
 		String stringParsed = new String();
 		//ak string obsahuje 2 slova tak je to ucitel
 		if(scan.hasNext()){
+			idTimetable = "Učiteľ: " + string;
 			stringParsed = scan.next();
 			if(scan.hasNext()){
 				String stringParsed2 = scan.next();
@@ -289,9 +253,11 @@ public class DataStorageDatabase {
 			} else {
 				//ak string je jedno slovo a zacina na pismeno tak je to miestnost
 				if(Character.isLetter(string.charAt(0))){
+					idTimetable = "Miestnosť: " + string;
 					cursor = dbManager.searchLessonsByRoom(string);
 				} else {
 					// ostava kruzok
+					idTimetable = "Krúžok: " + string;
 					cursor = dbManager.searchLessonsByClass(string);
 				}
 			}
@@ -312,6 +278,24 @@ public class DataStorageDatabase {
 		cursor.close();
 
 		timeTable = new TimeTable(lessons);
+		timeTable.setId(idTimetable);
 		return timeTable;
+	}
+	
+	public void addFavoriteTimeTable(String name) {
+		dbManager.addFavoriteTimeTable(name);
+	}
+	
+	public ArrayList<String> getStringsFromFavorites(String string) {
+		ArrayList<String> strings = new ArrayList<String>();
+		
+		Cursor cursorRoom = dbManager.giveNamesFromFavorites();
+		if(cursorRoom.getColumnCount() != 0) cursorRoom.moveToFirst();
+		for (int i = 0; i < cursorRoom.getCount(); i++) {
+			strings.add(cursorRoom.getString(0));
+			cursorRoom.moveToNext();
+		}
+		cursorRoom.close();
+		return strings;
 	}
 }

@@ -34,9 +34,7 @@ public class SearchActivity extends FragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
-		// content v dataStorage je MainActivity lebo ta ho prva vytvorila
 		dataStorage = DataStorageDatabase.getDataStorageDatabaseInstance(this);
-
 	}
 
 	@Override
