@@ -1,7 +1,6 @@
 package com.svt.candle;
 
 
-import java.io.Serializable;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -117,8 +116,10 @@ public class MainActivity extends Activity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 		    String searchedString = extras.getString("searchedString");
+		    Log.d("searched string: ", searchedString);
 		    TimeTable searched = dataStorage.getTimeTableAccordingTOString(searchedString);
 			current = searched;
+			current.setId(searchedString);
 		}
 		
 //		Log.d("resume", current.timeTableToString(this));

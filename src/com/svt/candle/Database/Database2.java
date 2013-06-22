@@ -288,9 +288,11 @@ public class Database2 {
 	}
 
 	public void addFavoriteTimeTable(String name) {
+		database = dbHelper.getWritableDatabase();
 		final String MY_QUERY = "INSERT INTO " + TB_OBLUBENE
-				+ " VALUES (null, " + name+ ")";
+				+ " VALUES (null, '" + name + "')";
 		database.execSQL(MY_QUERY);
+		database.close();
 	}
 	
 	public Cursor giveNamesFromFavorites() {
