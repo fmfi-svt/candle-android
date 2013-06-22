@@ -226,7 +226,7 @@ public class DataStorageDatabase {
 		cursorTeacher.close();
 		return strings;
 	}
-
+	
 	/**
 	 * Vyhlada data v databaze podla nazvu- kruzok, miestnost alebo ucitela a
 	 * vrati objekt TimeTable
@@ -286,7 +286,7 @@ public class DataStorageDatabase {
 		dbManager.addFavoriteTimeTable(name);
 	}
 	
-	public ArrayList<String> getStringsFromFavorites(String string) {
+	public ArrayList<String> getStringsFromFavorites() {
 		ArrayList<String> strings = new ArrayList<String>();
 		
 		Cursor cursorRoom = dbManager.giveNamesFromFavorites();

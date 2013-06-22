@@ -13,5 +13,6 @@
     <string name="title_activity_fragment1">Fragment1</string>
     <string name="title_activity_favorites">FavoritesActivity</string>
     <string name="title_activity_add_favorite">AddFavoriteActivity</string>
+    <string name="favorites_text">Oblubene</string>
 
 </resources>
