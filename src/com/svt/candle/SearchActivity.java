@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,9 +48,12 @@ public class SearchActivity extends Activity{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		search = (Button) findViewById(R.id.buttonSearch);
-		search.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
+	
+		getNick = (EditText) findViewById(R.id.editTextSearch);
+		getNick.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				try {
 					getNick = (EditText) findViewById(R.id.editTextSearch);
 					if (getNick.length() == 0) {
@@ -86,6 +91,11 @@ public class SearchActivity extends Activity{
 					Log.w("Debug-SearchAct-onClick", e.getMessage());
 				}
 			}
+			@Override
+			public void afterTextChanged(Editable s) {}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {}
 		});
 	}
 	
