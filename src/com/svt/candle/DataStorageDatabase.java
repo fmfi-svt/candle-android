@@ -44,8 +44,8 @@ public class DataStorageDatabase {
 		this.context = context;
 		dbManager = new Database2(context);
 		// iba pre testovanie
-				dbManager.zmamDatabazu();
-				 dbManager.vymazRiadkyDatabazy();
+//				dbManager.zmamDatabazu();
+//				 dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
 		// aby sa dalo z cursora citat pri kontrole
 		cursorInfoRozvrh.moveToFirst();
@@ -286,6 +286,10 @@ public class DataStorageDatabase {
 		dbManager.addFavoriteTimeTable(name);
 	}
 	
+	public void makeBasicTimeTable(String name) {
+		dbManager.makeBasicTimeTable(name);
+	}
+	
 	public void removeFavoriteTimeTable(String name) {
 		dbManager.removeFavoriteTimeTable(name);
 	}
@@ -293,7 +297,7 @@ public class DataStorageDatabase {
 	public ArrayList<String> getStringsFromFavorites() {
 		ArrayList<String> strings = new ArrayList<String>();
 		
-		Cursor cursorRoom = dbManager.giveNamesFromFavorites();
+		Cursor cursorRoom = dbManager.getNamesFromFavorites();
 		if(cursorRoom.getColumnCount() != 0) cursorRoom.moveToFirst();
 		for (int i = 0; i < cursorRoom.getCount(); i++) {
 			strings.add(cursorRoom.getString(0));
@@ -306,5 +310,22 @@ public class DataStorageDatabase {
 	
 	public void vypistabulku(String id) {
 		dbManager.checkTable2(id);
+	}
+	
+	public TimeTable getBasicTimeTable() {
+		Cursor cursor = dbManager.getBasicTimeTable();
+		Log.d("aktualny rozvrh", "ziskali sme rozvrh");
+		String string = "";
+		if (!(cursor.moveToFirst()) || cursor.getCount() ==0){
+			string = "A";
+		} else {	
+			Log.d("aktualny rozvrh", "pred");
+			if(cursor.getCount() == 1 ) cursor.moveToFirst();
+			Log.d("aktualny rozvrh", "po");
+			string = cursor.getString(0);
+			Log.d("aktualny rozvrh", "po");
+		}
+		Log.d("NAZOVHLAVNEHO", string);
+		return this.getTimeTableAccordingTOString(string);
 	}
 }

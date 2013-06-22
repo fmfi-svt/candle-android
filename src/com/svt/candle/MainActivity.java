@@ -34,8 +34,13 @@ public class MainActivity extends Activity {
 				dataStorage = DataStorageDatabase.getDataStorageDatabaseInstance(this);
 			}
 			//provizorna nastavanie zatial
-			if(current == null) current = dataStorage.getTimeTableAccordingTOString("A");
-//			current = dataStorage.getTimeTableAccordingTOString("A");
+			if(current == null) {
+				Log.d("aktualny rozvrh", "ziskavame rozvrh");
+				current = dataStorage.getBasicTimeTable();
+				if (current == null) {
+					Log.d("aktualny rozvrh", "aktualny rozvrh je null!!!!!!!!!!!");
+				}
+			}
 		} catch (Exception e) {
 			Log.w("Debug", e.getMessage());
 		}
@@ -44,6 +49,8 @@ public class MainActivity extends Activity {
 	public void printTimeTable(TimeTable timeTable) {
 		if (dataStorage != null) {
 			printTimeTable.setText(timeTable.timeTableToString(this));
+		} else {
+			Log.d("printTT", "timetable is null");
 		}
 	}
 	/**
@@ -70,7 +77,7 @@ public class MainActivity extends Activity {
 				@Override
 				public boolean onMenuItemClick(MenuItem item) {
 					Log.d("addFavorite", "funguje tlacitko");
-					dataStorage.addFavoriteTimeTable(current.getId());
+					dataStorage.makeBasicTimeTable(current.getId());
 					return false;
 				}
 			});
@@ -86,7 +93,17 @@ public class MainActivity extends Activity {
 			});
 		}
 		
+		MenuItem BasicTimeTableMenuItem = menu.add("Nastav ako hlavny rozvrh");
+		BasicTimeTableMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Log.d("Hlavny rozvrh", "funguje tlacitko");
 
+				return false;
+			}
+		});
+		
+		
 		MenuItem FavoritesMenuItem = menu.add("Oblubene");
 		FavoritesMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override

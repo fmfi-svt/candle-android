@@ -54,6 +54,10 @@ public class Database2 {
 	private static final String TB_OBLUBENE = "oblubene";
 	private static final String COLUMN_OBLUBENE_ID = "id";
 	private static final String COLUMN_OBLUBENE_NAME = "name";
+	
+	// tabulka pre oblubene rozvry
+		private static final String TB_HLAVNY = "hlavny";
+		private static final String COLUMN_HLAVNY_NAZOV = "name";
 
 	// tabulka pre info o rozvrhu
 	private static final String TB_INFO = "info";
@@ -128,6 +132,11 @@ public class Database2 {
 					+ COLUMN_OBLUBENE_ID + " AUTO_INCREMENT,"
 					+ COLUMN_OBLUBENE_NAME + " TEXT);";
 			db.execSQL(createQuery);
+			
+			// vytvorenie tabulky pre hlavny rozvrh
+						createQuery = "CREATE TABLE " + TB_HLAVNY + "("
+								+ COLUMN_OBLUBENE_NAME + " TEXT);";
+						db.execSQL(createQuery);
 
 			// indexy na zrychlenie databzy
 			createQuery = "CREATE INDEX i1 ON " + TB_HODKRUZOK + " ("
@@ -314,6 +323,16 @@ public class Database2 {
 		database.close();
 	}
 	
+	public void makeBasicTimeTable(String name) {
+		database = dbHelper.getWritableDatabase();
+		String MY_QUERY = "DELETE FROM " + TB_HLAVNY;
+		database.execSQL(MY_QUERY);
+		MY_QUERY = "INSERT INTO " + TB_HLAVNY
+				+ " VALUES ('" + name + "')";
+		database.execSQL(MY_QUERY);
+		database.close();
+	}
+	
 	public void removeFavoriteTimeTable(String name) {
 		Log.d("removeFavoriteTimeTable","mazem zaznam");
 		database = dbHelper.getWritableDatabase();
@@ -324,9 +343,15 @@ public class Database2 {
 		database.close();
 	}
 	
-	public Cursor giveNamesFromFavorites() {
+	public Cursor getNamesFromFavorites() {
 		final String MY_QUERY = "SELECT " + COLUMN_OBLUBENE_NAME
 				+ " FROM " + TB_OBLUBENE;
+		return searchByQuery(MY_QUERY);
+	}
+	
+	public Cursor getBasicTimeTable(){
+		final String MY_QUERY = "SELECT " + COLUMN_HLAVNY_NAZOV
+				+ " FROM " + TB_HLAVNY;
 		return searchByQuery(MY_QUERY);
 	}
 }
