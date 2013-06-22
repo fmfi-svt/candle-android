@@ -41,6 +41,7 @@ public class Database2 {
 	private static final String COLUMN_HODUCITEL_IDHODINY = "idHodiny";
 	private static final String COLUMN_HODUCITEL_IDUCITELA = "idUcitela";
 	private static final String COLUMN_HODUCITEL_PRIEZVISKO = "priezvisko";
+	private static final String COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY = "upravene_priezvisko";
 	private static final String COLUMN_HODUCITEL_MENO = "meno";
 	private static final String COLUMN_HODUCITEL_KATEDRA = "katedra";
 	private static final String COLUMN_HODUCITEL_ODDELENIE = "oddelenie";
@@ -104,14 +105,15 @@ public class Database2 {
 			db.execSQL(createQuery);
 
 			// vytvorenie tablulky hoducitel (`idHodiny`, `idUcitela`,
-			// `katedra`, `meno`, `oddelenie`, `priezvisko`)
+			// `katedra`, `meno`, `oddelenie`, `priezvisko`, `priezvisko_bez_diakritiky`)
 			createQuery = "CREATE TABLE " + TB_HODUCITEL + "("
 					+ COLUMN_HODUCITEL_IDHODINY + " TEXT,"
 					+ COLUMN_HODUCITEL_IDUCITELA + " TEXT,"
 					+ COLUMN_HODUCITEL_KATEDRA + " TEXT,"
 					+ COLUMN_HODUCITEL_MENO + " TEXT,"
 					+ COLUMN_HODUCITEL_ODDELENIE + " TEXT,"
-					+ COLUMN_HODUCITEL_PRIEZVISKO + " TEXT);";
+					+ COLUMN_HODUCITEL_PRIEZVISKO + " TEXT,"
+					+ COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY  + " TEXT);";
 			db.execSQL(createQuery);
 
 			// vytvorenie tablulky hodkruzok
@@ -143,7 +145,7 @@ public class Database2 {
 					+ COLUMN_HODKRUZOK_IDKRUZKU + ");";
 			db.execSQL(createQuery);
 			createQuery = "CREATE INDEX i2 ON " + TB_HODUCITEL + " ("
-					+ COLUMN_HODUCITEL_PRIEZVISKO + ");";
+					+ COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY + ");";
 			db.execSQL(createQuery);
 		}
 
@@ -305,7 +307,7 @@ public class Database2 {
 		final String MY_QUERY = "SELECT DISTINCT "
 				+ COLUMN_HODUCITEL_PRIEZVISKO + " , " + COLUMN_HODUCITEL_MENO
 				+ " FROM " + TB_HODUCITEL + " WHERE "
-				+ COLUMN_HODUCITEL_PRIEZVISKO + " LIKE \"" + teacher + "%\"";
+				+ COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY + " LIKE \"" + teacher + "%\"";
 		return searchByQuery(MY_QUERY);
 	}
 
