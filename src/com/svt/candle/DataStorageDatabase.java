@@ -44,8 +44,8 @@ public class DataStorageDatabase {
 		this.context = context;
 		dbManager = new Database2(context);
 		// iba pre testovanie
-//				dbManager.zmamDatabazu();
-//				 dbManager.vymazRiadkyDatabazy();
+				dbManager.zmamDatabazu();
+				 dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
 		// aby sa dalo z cursora citat pri kontrole
 		cursorInfoRozvrh.moveToFirst();

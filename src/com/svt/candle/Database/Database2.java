@@ -230,6 +230,7 @@ public class Database2 {
 		database.delete(TB_OBLUBENE, null, null);
 		database.delete(TB_HODKRUZOK, null, null);
 		database.delete(TB_HODUCITEL, null, null);
+		database.delete(TB_HLAVNY, null, null);
 		database.delete(TB_INFO, null, null);
 		database.close();
 	}

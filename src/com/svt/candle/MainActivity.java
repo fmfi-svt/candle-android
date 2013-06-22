@@ -93,12 +93,23 @@ public class MainActivity extends Activity {
 			});
 		}
 		
-		MenuItem BasicTimeTableMenuItem = menu.add("Nastav ako hlavny rozvrh");
-		BasicTimeTableMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+		MenuItem makeBasicTimeTableMenuItem = menu.add("Nastav ako hlavny rozvrh");
+		makeBasicTimeTableMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				Log.d("Hlavny rozvrh", "funguje tlacitko");
-
+				dataStorage.makeBasicTimeTable(current.getId());
+				return false;
+			}
+		});
+		
+		MenuItem DisplayBasicTimeTableMenuItem = menu.add("Zobraz hlavny rozvrh");
+		DisplayBasicTimeTableMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Log.d("Hlavny rozvrh", "funguje tlacitko");
+				current = dataStorage.getBasicTimeTable();
+				printTimeTable(current);
 				return false;
 			}
 		});
