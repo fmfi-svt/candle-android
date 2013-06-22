@@ -53,7 +53,6 @@ public class Database2 {
 	// tabulka pre oblubene rozvry
 	private static final String TB_OBLUBENE = "oblubene";
 	private static final String COLUMN_OBLUBENE_ID = "id";
-	private static final String COLUMN_OBLUBENE_IDHODINY = "idHodiny";
 	private static final String COLUMN_OBLUBENE_NAME = "name";
 
 	// tabulka pre info o rozvrhu
@@ -219,6 +218,7 @@ public class Database2 {
 	public void vymazRiadkyDatabazy() {
 		database = dbHelper.getWritableDatabase();
 		database.delete(TB_HODINY_NAME, null, null);
+		database.delete(TB_OBLUBENE, null, null);
 		database.delete(TB_HODKRUZOK, null, null);
 		database.delete(TB_HODUCITEL, null, null);
 		database.delete(TB_INFO, null, null);
@@ -247,6 +247,25 @@ public class Database2 {
 		// Log.d("test", "????????????????????????????");
 		// cursor.moveToNext();
 		// }
+		cursor.close();
+		return cursor;
+	}
+	public Cursor checkTable2(String TB_NAME) {
+		database = dbHelper.getReadableDatabase();
+		final String MY_QUERY = "SELECT * FROM " + TB_NAME;
+
+		Cursor cursor = database.rawQuery(MY_QUERY, null);
+		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
+		database.close();
+		 cursor.moveToFirst();
+		 for (int i = 0; i < cursor.getCount(); i ++) {
+		
+		 for (int j = 0; j < cursor.getColumnCount(); j++) {
+		 Log.d("test",cursor.getColumnName(j) + " " +cursor.getString(j));
+		 }
+		 Log.d("test", "????????????????????????????");
+		 cursor.moveToNext();
+		 }
 		cursor.close();
 		return cursor;
 
@@ -295,8 +314,18 @@ public class Database2 {
 		database.close();
 	}
 	
+	public void removeFavoriteTimeTable(String name) {
+		Log.d("removeFavoriteTimeTable","mazem zaznam");
+		database = dbHelper.getWritableDatabase();
+//		final String MY_QUERY = "Delete FROM " + TB_OBLUBENE
+//				+ " WHERE " + COLUMN_OBLUBENE_NAME + " = ' " + name + " ' ";
+//		database.execSQL(MY_QUERY);
+		database.delete(TB_OBLUBENE, COLUMN_OBLUBENE_NAME + " = ' " + name + " ' ", null);
+		database.close();
+	}
+	
 	public Cursor giveNamesFromFavorites() {
-		final String MY_QUERY = "SELECT DISTINCT " + COLUMN_OBLUBENE_NAME
+		final String MY_QUERY = "SELECT " + COLUMN_OBLUBENE_NAME
 				+ " FROM " + TB_OBLUBENE;
 		return searchByQuery(MY_QUERY);
 	}

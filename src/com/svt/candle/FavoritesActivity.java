@@ -35,7 +35,7 @@ public class FavoritesActivity extends Activity {
     @Override
     protected void onResume() {
     	super.onResume();
-    	
+    	dataStorage.vypistabulku("oblubene");
     	mainListView = (ListView) findViewById(R.id.favoritesList);
 		vypis = dataStorage.getStringsFromFavorites();
 		// Create ArrayAdapter using the planet list.

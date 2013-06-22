@@ -1,6 +1,8 @@
 package com.svt.candle;
 
 
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -32,7 +34,8 @@ public class MainActivity extends Activity {
 				dataStorage = DataStorageDatabase.getDataStorageDatabaseInstance(this);
 			}
 			//provizorna nastavanie zatial
-			current = dataStorage.getTimeTableAccordingTOString("A");
+			if(current == null) current = dataStorage.getTimeTableAccordingTOString("A");
+//			current = dataStorage.getTimeTableAccordingTOString("A");
 		} catch (Exception e) {
 			Log.w("Debug", e.getMessage());
 		}
@@ -60,15 +63,29 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		
-		MenuItem addFavoriteMenuItem = menu.add("Pridaj do oblubenych");
-		addFavoriteMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				Log.d("addFavorite", "funguje tlacitko");
-				dataStorage.addFavoriteTimeTable(current.getId());
-				return false;
-			}
-		});
+		ArrayList<String> favorites = dataStorage.getStringsFromFavorites();
+		if(!favorites.contains(current.getId())) {
+			MenuItem addFavoriteMenuItem = menu.add("Pridaj do oblubenych");
+			addFavoriteMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					Log.d("addFavorite", "funguje tlacitko");
+					dataStorage.addFavoriteTimeTable(current.getId());
+					return false;
+				}
+			});
+		} else {
+			MenuItem removeFavoriteMenuItem = menu.add("Odstran z oblubenych");
+			removeFavoriteMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					Log.d("removeFavorite", "funguje tlacitko");
+					dataStorage.removeFavoriteTimeTable(current.getId());
+					return false;
+				}
+			});
+		}
+		
 
 		MenuItem FavoritesMenuItem = menu.add("Oblubene");
 		FavoritesMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -120,6 +137,7 @@ public class MainActivity extends Activity {
 		    TimeTable searched = dataStorage.getTimeTableAccordingTOString(searchedString);
 			current = searched;
 			current.setId(searchedString);
+			
 		}
 		
 //		Log.d("resume", current.timeTableToString(this));

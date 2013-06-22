@@ -44,8 +44,8 @@ public class DataStorageDatabase {
 		this.context = context;
 		dbManager = new Database2(context);
 		// iba pre testovanie
-//				dbManager.zmamDatabazu();
-//				 dbManager.vymazRiadkyDatabazy();
+				dbManager.zmamDatabazu();
+				 dbManager.vymazRiadkyDatabazy();
 		Cursor cursorInfoRozvrh = dbManager.dajInfoRozvrhu();
 		// aby sa dalo z cursora citat pri kontrole
 		cursorInfoRozvrh.moveToFirst();
@@ -286,6 +286,10 @@ public class DataStorageDatabase {
 		dbManager.addFavoriteTimeTable(name);
 	}
 	
+	public void removeFavoriteTimeTable(String name) {
+		dbManager.removeFavoriteTimeTable(name);
+	}
+	
 	public ArrayList<String> getStringsFromFavorites() {
 		ArrayList<String> strings = new ArrayList<String>();
 		
@@ -297,5 +301,10 @@ public class DataStorageDatabase {
 		}
 		cursorRoom.close();
 		return strings;
+	}
+	
+	
+	public void vypistabulku(String id) {
+		dbManager.checkTable2(id);
 	}
 }
