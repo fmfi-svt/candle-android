@@ -41,7 +41,7 @@ public class Database2 {
 	private static final String COLUMN_HODUCITEL_IDHODINY = "idHodiny";
 	private static final String COLUMN_HODUCITEL_IDUCITELA = "idUcitela";
 	private static final String COLUMN_HODUCITEL_PRIEZVISKO = "priezvisko";
-	private static final String COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY = "upravene_priezvisko";
+//	private static final String COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY = "upravene_priezvisko";
 	private static final String COLUMN_HODUCITEL_MENO = "meno";
 	private static final String COLUMN_HODUCITEL_KATEDRA = "katedra";
 	private static final String COLUMN_HODUCITEL_ODDELENIE = "oddelenie";
@@ -112,8 +112,9 @@ public class Database2 {
 					+ COLUMN_HODUCITEL_KATEDRA + " TEXT,"
 					+ COLUMN_HODUCITEL_MENO + " TEXT,"
 					+ COLUMN_HODUCITEL_ODDELENIE + " TEXT,"
-					+ COLUMN_HODUCITEL_PRIEZVISKO + " TEXT,"
-					+ COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY  + " TEXT);";
+					+ COLUMN_HODUCITEL_PRIEZVISKO  + " TEXT);";
+//					+ COLUMN_HODUCITEL_PRIEZVISKO + " TEXT,"
+//					+ COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY  + " TEXT);";
 			db.execSQL(createQuery);
 
 			// vytvorenie tablulky hodkruzok
@@ -145,7 +146,7 @@ public class Database2 {
 					+ COLUMN_HODKRUZOK_IDKRUZKU + ");";
 			db.execSQL(createQuery);
 			createQuery = "CREATE INDEX i2 ON " + TB_HODUCITEL + " ("
-					+ COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY + ");";
+					+ COLUMN_HODUCITEL_PRIEZVISKO + ");";
 			db.execSQL(createQuery);
 		}
 
@@ -250,15 +251,15 @@ public class Database2 {
 		Cursor cursor = database.rawQuery(MY_QUERY, null);
 		Log.d("cursor DBM", Integer.toString(cursor.getCount()));
 		database.close();
-		// cursor.moveToFirst();
-		// for (int i = 0; i < cursor.getCount(); i += 100) {
-		//
-		// for (int j = 0; j < cursor.getColumnCount(); j++) {
-		// Log.d("test",cursor.getColumnName(j) + " " +cursor.getString(j));
-		// }
-		// Log.d("test", "????????????????????????????");
-		// cursor.moveToNext();
-		// }
+		 cursor.moveToFirst();
+		 for (int i = 0; i < cursor.getCount(); i += 100) {
+		
+		 for (int j = 0; j < cursor.getColumnCount(); j++) {
+		 Log.d("test",cursor.getColumnName(j) + " " +cursor.getString(j));
+		 }
+		 Log.d("test", "????????????????????????????");
+		 cursor.moveToNext();
+		 }
 		cursor.close();
 		return cursor;
 	}
@@ -307,7 +308,7 @@ public class Database2 {
 		final String MY_QUERY = "SELECT DISTINCT "
 				+ COLUMN_HODUCITEL_PRIEZVISKO + " , " + COLUMN_HODUCITEL_MENO
 				+ " FROM " + TB_HODUCITEL + " WHERE "
-				+ COLUMN_HODUCITEL_PRIEZVISKO_BEZ_DIAKRITIKY + " LIKE \"" + teacher + "%\"";
+				+ COLUMN_HODUCITEL_PRIEZVISKO + " LIKE \"" + teacher + "%\"";
 		return searchByQuery(MY_QUERY);
 	}
 
