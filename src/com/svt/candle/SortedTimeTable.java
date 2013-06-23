@@ -64,11 +64,15 @@ public class SortedTimeTable {
 		Collections.sort(list, new LessonComparator());
 		//priadnie zaciatocnej a konecnej empty hodiny
 		try{
-			if(Integer.parseInt(list.get(0).from) > startLearning){
-				listEmptyLessons.add(new Lesson("", Integer.toString(startLearning), list.get(0).from, (Integer.parseInt(list.get(0).from) - startLearning), "", "", "empty", ""));
-			}
-			if(Integer.parseInt(list.get(list.size()-1).to) < endLearning){
-				listEmptyLessons.add(new Lesson("", list.get(list.size()-1).to, Integer.toString(endLearning), (endLearning - Integer.parseInt(list.get(list.size()-1).from)), "", "", "empty", ""));
+			if(list.isEmpty()){
+				listEmptyLessons.add(new Lesson("", Integer.toString(startLearning), Integer.toString(endLearning), (endLearning - startLearning), "", "", "empty", ""));
+			} else { 
+				if(Integer.parseInt(list.get(0).from) > startLearning){
+					listEmptyLessons.add(new Lesson("", Integer.toString(startLearning), list.get(0).from, (Integer.parseInt(list.get(0).from) - startLearning), "", "", "empty", ""));
+				}
+				if(Integer.parseInt(list.get(list.size()-1).to) < endLearning){
+					listEmptyLessons.add(new Lesson("", list.get(list.size()-1).to, Integer.toString(endLearning), (endLearning - Integer.parseInt(list.get(list.size()-1).from)), "", "", "empty", ""));
+				}
 			}
 		} catch(Exception e){
 			Log.e("sortLessonsAndAddEmpty", e.getMessage());
@@ -118,12 +122,17 @@ public class SortedTimeTable {
 	}
 	
 	public View getView(Context context){
-		View view = new View(context);
-		LinearLayout oneDay = null;
+		LinearLayout view = new LinearLayout(context);
+		view.setOrientation(LinearLayout.VERTICAL);
 		for (int i = 0; i < 5; i++) {
-			oneDay = new LinearLayout(context);
-			
+			LinearLayout oneDay = new LinearLayout(context);
+			oneDay.setOrientation(LinearLayout.HORIZONTAL);
+			for (int j = 0; j < days.get(i).size(); j++) {
+				oneDay.addView(days.get(i).get(j).getView(context));
+			}
+			view.addView(oneDay);
 		}
+		
 		return view;
 	}
 	

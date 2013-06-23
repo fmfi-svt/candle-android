@@ -10,6 +10,9 @@ package com.svt.candle;
 public final class R {
     public static final class attr {
     }
+    public static final class color {
+        public static final int white=0x7f070000;
+    }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
          */
@@ -22,15 +25,15 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int editTextSearch=0x7f090003;
-        public static final int favoritesList=0x7f090001;
-        public static final int favorites_upper_text=0x7f090000;
-        public static final int lesson_room=0x7f090006;
-        public static final int lesson_subject_name=0x7f090005;
-        public static final int menu_settings=0x7f090008;
-        public static final int printCandle=0x7f090002;
-        public static final int rowTextView=0x7f090007;
-        public static final int searchList=0x7f090004;
+        public static final int editTextSearch=0x7f0a0003;
+        public static final int favoritesList=0x7f0a0001;
+        public static final int favorites_upper_text=0x7f0a0000;
+        public static final int lesson_room=0x7f0a0006;
+        public static final int lesson_subject_name=0x7f0a0005;
+        public static final int menu_settings=0x7f0a0008;
+        public static final int printCandle=0x7f0a0002;
+        public static final int rowTextView=0x7f0a0007;
+        public static final int searchList=0x7f0a0004;
     }
     public static final class layout {
         public static final int activity_favorites=0x7f030000;
@@ -40,11 +43,11 @@ public final class R {
         public static final int row_search_layout=0x7f030004;
     }
     public static final class menu {
-        public static final int activity_favorites=0x7f080000;
-        public static final int activity_fragment1=0x7f080001;
-        public static final int activity_main=0x7f080002;
-        public static final int activity_search=0x7f080003;
-        public static final int activity_search2=0x7f080004;
+        public static final int activity_favorites=0x7f090000;
+        public static final int activity_fragment1=0x7f090001;
+        public static final int activity_main=0x7f090002;
+        public static final int activity_search=0x7f090003;
+        public static final int activity_search2=0x7f090004;
     }
     public static final class raw {
         public static final int sqlfile=0x7f040000;
@@ -76,10 +79,10 @@ public final class R {
             backward-compatibility can go here.
         
          */
-        public static final int AppBaseTheme=0x7f070000;
+        public static final int AppBaseTheme=0x7f080000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f070001;
+        public static final int AppTheme=0x7f080001;
     }
 }

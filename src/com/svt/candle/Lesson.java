@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -44,6 +43,6 @@ public class Lesson {
 		name.setText(this.subjectName);
 		TextView room = (TextView) lessonLayout.findViewById(R.id.lesson_room);
 		room.setText(this.room);
-		return view;
+		return lessonLayout;
 	}
 }

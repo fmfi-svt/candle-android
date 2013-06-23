@@ -11,6 +11,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 /**
@@ -18,7 +21,8 @@ import android.widget.TextView;
  */
 
 public class MainActivity extends Activity {
-	TextView printTimeTable = null;
+//	TextView printTimeTable = null;
+	View printTimeTable = null;
 	Boolean hladalSom = false;
 	DataStorageDatabase dataStorage = null;
 	// rozvrh zobrazujuci sa vzdy na zaciatku
@@ -47,17 +51,22 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	public void printTimeTable(TimeTable timeTable) {
-		if (dataStorage != null) {
-			printTimeTable.setText(timeTable.timeTableToString(this));
-		} else {
-			Log.d("printTT", "timetable is null");
-		}
-	}
-	
+//	public void printTimeTable(TimeTable timeTable) {
+//		if (dataStorage != null) {
+//			printTimeTable.setText(timeTable.timeTableToString(this));
+//		} else {
+//			Log.d("printTT", "timetable is null");
+//		}
+//	}
+//	
 	public void printSortedTimeTable(SortedTimeTable timeTable) {
 		if (dataStorage != null) {
-			printTimeTable.setText(timeTable.timeTableToString(this));
+			sortedCurrent = new SortedTimeTable(current);
+//			printTimeTable.setText(timeTable.timeTableToString(this));
+			Log.d("vypis rozvrhu", sortedCurrent.timeTableToString(this));
+			((ScrollView)findViewById(R.id.printCandle)).removeAllViews();
+			((ScrollView)findViewById(R.id.printCandle)).addView(sortedCurrent.getView(this));
+			
 		} else {
 			Log.d("printTT", "timetable is null");
 		}
@@ -71,8 +80,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		printTimeTable = (TextView) findViewById(R.id.printCandle);
-		printTimeTable.setMovementMethod(new ScrollingMovementMethod());
+//		printTimeTable = (TextView) findViewById(R.id.printCandle);
+//		printTimeTable.setMovementMethod(new ScrollingMovementMethod());
 	}
 
 	@Override
