@@ -5,10 +5,13 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 public class SortedTimeTable {
-
+	
+	final int startLearning = 490; 
+	final int endLearning = 1200;
 	TimeTable basicTimeTable = null;
 	
 	ArrayList<ArrayList<Lesson>> days = new ArrayList<ArrayList<Lesson>>();
@@ -53,10 +56,22 @@ public class SortedTimeTable {
 	    	return Integer.parseInt(l1.from) - Integer.parseInt(l2.from);
 	    }
 	}
-	private void sortLessonsAndAddEmpty(ArrayList<Lesson> list) {
+	
+	private void sortLessonsAndAddEmpty(ArrayList<Lesson> list) { 
 		ArrayList<Lesson> listEmptyLessons = new ArrayList<Lesson>();
 		Collections.sort(list, new LessonComparator());
-		//zaciatocnu pridat
+		//priadnie zaciatocnej a konecnej empty hodiny
+		try{
+			if(Integer.parseInt(list.get(0).from) > startLearning){
+				listEmptyLessons.add(new Lesson("", Integer.toString(startLearning), list.get(0).from, (Integer.parseInt(list.get(0).from) - startLearning), "", "", "empty", ""));
+			}
+			if(Integer.parseInt(list.get(list.size()-1).to) < endLearning){
+				listEmptyLessons.add(new Lesson("", list.get(list.size()-1).to, Integer.toString(endLearning), (endLearning - Integer.parseInt(list.get(list.size()-1).from)), "", "", "empty", ""));
+			}
+		} catch(Exception e){
+			Log.e("sortLessonsAndAddEmpty", e.getMessage());
+		}
+		
 		for (int i = 0; i < list.size()-1; i++) {
 			int r = Integer.parseInt(list.get(i+1).from) - Integer.parseInt(list.get(i).to);
 			if(r > 0){

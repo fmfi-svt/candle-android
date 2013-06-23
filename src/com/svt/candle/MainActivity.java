@@ -119,7 +119,12 @@ public class MainActivity extends Activity {
 				Log.d("Hlavny rozvrh", "funguje tlacitko");
 				current = dataStorage.getBasicTimeTable();
 //				printTimeTable(current);
-				printSortedTimeTable(sortedCurrent);
+				try{
+					printSortedTimeTable(sortedCurrent);
+				} catch(Exception e){
+					Log.e("printing TT - zobraz hl rozvrh", e.getMessage());
+				}
+				
 				return false;
 			}
 		});
@@ -159,7 +164,11 @@ public class MainActivity extends Activity {
 		super.onStart();
 		initializeDataStorage();
 //		printTimeTable(current);
-		printSortedTimeTable(sortedCurrent);
+		try{
+			printSortedTimeTable(sortedCurrent);
+		} catch(Exception e){
+			Log.e("printing TT - onstart", e.getMessage());
+		}
 		
 	}
 	/**
@@ -182,7 +191,11 @@ public class MainActivity extends Activity {
 //		Log.d("resume", current.timeTableToString(this));
 		Log.d("resume", "vykonal sa resume");
 //		printTimeTable(current);
-		printSortedTimeTable(sortedCurrent);
+		try{
+			printSortedTimeTable(sortedCurrent);
+		} catch(Exception e){
+			Log.e("printing TT - zobraz hl rozvrh", e.getMessage());
+		}
 		Log.d("resume","vytlacil sa rozvr");
 	}
 	
