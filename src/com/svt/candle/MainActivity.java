@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
 				@Override
 				public boolean onMenuItemClick(MenuItem item) {
 					Log.d("addFavorite", "funguje tlacitko");
-					dataStorage.makeBasicTimeTable(current.getId());
+					dataStorage.addFavoriteTimeTable(current.getId());
 					return false;
 				}
 			});
