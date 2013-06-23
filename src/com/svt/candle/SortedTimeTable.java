@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import android.R.integer;
+import android.content.Context;
+import android.widget.Toast;
 
 public class SortedTimeTable {
 
@@ -53,15 +54,50 @@ public class SortedTimeTable {
 	    }
 	}
 	private void sortLessonsAndAddEmpty(ArrayList<Lesson> list) {
+		ArrayList<Lesson> listEmptyLessons = new ArrayList<Lesson>();
 		Collections.sort(list, new LessonComparator());
 		//zaciatocnu pridat
 		for (int i = 0; i < list.size()-1; i++) {
-			int r = Integer.parseInt(list.get(i+1).from) - Integer.parseInt(list.get(i).from);
+			int r = Integer.parseInt(list.get(i+1).from) - Integer.parseInt(list.get(i).to);
 			if(r > 0){
-				list.add(new Lesson(null, list.get(i).to, list.get(i+1).from, r, null, null, "empty", null));
+				listEmptyLessons.add(new Lesson("", list.get(i).to, list.get(i+1).from, r, "", "", "empty", ""));
 			}
 		}
+		list.addAll(listEmptyLessons);
 		Collections.sort(list, new LessonComparator());
+	}
+	
+	public String timeTableToString(Context context) {
+		if (this == null) {
+			final Toast toast = Toast.makeText(context,
+					"Nemate nastaveny defaultny rozvrh!", Toast.LENGTH_SHORT);
+			toast.show();
+			return "";
+		}
+
+		StringBuffer sb = new StringBuffer();
+		
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < days.get(i).size(); j++) {
+				sb.append(days.get(i).get(j).day);
+				sb.append(" ");
+				sb.append(days.get(i).get(j).duration);
+				sb.append(" ");
+				sb.append(days.get(i).get(j).from);
+				sb.append(" ");
+				sb.append(days.get(i).get(j).to);
+				sb.append(" ");
+				sb.append(days.get(i).get(j).room);
+				sb.append(" ");
+				sb.append(days.get(i).get(j).typeOfSubject);
+				sb.append(" ");
+				sb.append(days.get(i).get(j).subjectName);
+				sb.append(" ");
+				sb.append(days.get(i).get(j).teachers);
+				sb.append("\n\n");
+			}
+		}
+		return sb.toString();
 	}
 	
 }

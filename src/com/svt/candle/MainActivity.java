@@ -23,7 +23,7 @@ public class MainActivity extends Activity {
 	DataStorageDatabase dataStorage = null;
 	// rozvrh zobrazujuci sa vzdy na zaciatku
 	public static TimeTable current = null;
-	
+	public static SortedTimeTable sortedCurrent = null;
 	
 	/**
 	 * Create timetable.
@@ -41,12 +41,21 @@ public class MainActivity extends Activity {
 					Log.d("aktualny rozvrh", "aktualny rozvrh je null!!!!!!!!!!!");
 				}
 			}
+			sortedCurrent = new SortedTimeTable(current);
 		} catch (Exception e) {
 			Log.w("Debug", e.getMessage());
 		}
 	}
 
 	public void printTimeTable(TimeTable timeTable) {
+		if (dataStorage != null) {
+			printTimeTable.setText(timeTable.timeTableToString(this));
+		} else {
+			Log.d("printTT", "timetable is null");
+		}
+	}
+	
+	public void printSortedTimeTable(SortedTimeTable timeTable) {
 		if (dataStorage != null) {
 			printTimeTable.setText(timeTable.timeTableToString(this));
 		} else {
@@ -109,7 +118,8 @@ public class MainActivity extends Activity {
 			public boolean onMenuItemClick(MenuItem item) {
 				Log.d("Hlavny rozvrh", "funguje tlacitko");
 				current = dataStorage.getBasicTimeTable();
-				printTimeTable(current);
+//				printTimeTable(current);
+				printSortedTimeTable(sortedCurrent);
 				return false;
 			}
 		});
@@ -148,7 +158,8 @@ public class MainActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		initializeDataStorage();
-		printTimeTable(current);
+//		printTimeTable(current);
+		printSortedTimeTable(sortedCurrent);
 		
 	}
 	/**
@@ -170,7 +181,8 @@ public class MainActivity extends Activity {
 		
 //		Log.d("resume", current.timeTableToString(this));
 		Log.d("resume", "vykonal sa resume");
-		printTimeTable(current);
+//		printTimeTable(current);
+		printSortedTimeTable(sortedCurrent);
 		Log.d("resume","vytlacil sa rozvr");
 	}
 	
