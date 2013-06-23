@@ -15,6 +15,8 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f050000;
         public static final int activity_vertical_margin=0x7f050001;
+        public static final int one_lesson_height=0x7f050003;
+        public static final int one_lesson_width=0x7f050002;
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
@@ -23,16 +25,19 @@ public final class R {
         public static final int editTextSearch=0x7f090003;
         public static final int favoritesList=0x7f090001;
         public static final int favorites_upper_text=0x7f090000;
-        public static final int menu_settings=0x7f090006;
+        public static final int lesson_room=0x7f090006;
+        public static final int lesson_subject_name=0x7f090005;
+        public static final int menu_settings=0x7f090008;
         public static final int printCandle=0x7f090002;
-        public static final int rowTextView=0x7f090005;
+        public static final int rowTextView=0x7f090007;
         public static final int searchList=0x7f090004;
     }
     public static final class layout {
         public static final int activity_favorites=0x7f030000;
         public static final int activity_main=0x7f030001;
         public static final int activity_search=0x7f030002;
-        public static final int row_search_layout=0x7f030003;
+        public static final int lesson=0x7f030003;
+        public static final int row_search_layout=0x7f030004;
     }
     public static final class menu {
         public static final int activity_favorites=0x7f080000;

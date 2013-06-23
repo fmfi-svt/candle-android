@@ -6,6 +6,8 @@ import java.util.Comparator;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class SortedTimeTable {
@@ -113,6 +115,16 @@ public class SortedTimeTable {
 			}
 		}
 		return sb.toString();
+	}
+	
+	public View getView(Context context){
+		View view = new View(context);
+		LinearLayout oneDay = null;
+		for (int i = 0; i < 5; i++) {
+			oneDay = new LinearLayout(context);
+			
+		}
+		return view;
 	}
 	
 }
