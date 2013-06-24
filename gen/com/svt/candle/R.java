@@ -11,7 +11,9 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int white=0x7f070000;
+        public static final int days=0x7f070000;
+        public static final int empty_lesson=0x7f070002;
+        public static final int lesson=0x7f070001;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -41,8 +43,9 @@ public final class R {
         public static final int activity_main=0x7f030001;
         public static final int activity_search=0x7f030002;
         public static final int day_side=0x7f030003;
-        public static final int lesson=0x7f030004;
-        public static final int row_search_layout=0x7f030005;
+        public static final int empty_lesson=0x7f030004;
+        public static final int lesson=0x7f030005;
+        public static final int row_search_layout=0x7f030006;
     }
     public static final class menu {
         public static final int activity_favorites=0x7f090000;

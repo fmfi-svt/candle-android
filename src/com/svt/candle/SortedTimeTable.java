@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SortedTimeTable {
@@ -15,6 +20,9 @@ public class SortedTimeTable {
 	final int startLearning = 480; 
 	final int endLearning = 1200;
 	TimeTable basicTimeTable = null;
+	final int width_row_division = 12;
+	final int height_row_division = 6;
+	final int side_row_division = 30;
 	
 	ArrayList<ArrayList<Lesson>> days = new ArrayList<ArrayList<Lesson>>();
 	
@@ -121,18 +129,67 @@ public class SortedTimeTable {
 		return sb.toString();
 	}
 	
+	public View sideBarDays(Context context, int i) {
+		LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+		View dayLayout = inflater.inflate(R.layout.day_side, null);
+		TextView name = (TextView) dayLayout.findViewById(R.id.day_name);
+		String day = "";
+		switch (i) {
+		case 0:day="p\no\nn";
+			break;
+		case 1:day="u\nt";
+		break;
+		case 2:day="s\nt\nr";
+		break;
+		case 3:day="s\nt\nv";
+		break;
+		case 4:day="p\ni";
+		break;
+		}
+		name.setText(day);
+		return dayLayout;
+	}
+	
+	public View sideBarTimes(Context context,int width,int height) {
+		LinearLayout times = new LinearLayout(context);
+		LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+		View timeLayout = inflater.inflate(R.layout.day_side, null);
+		times.addView(timeLayout, new LayoutParams((width/side_row_division), height/side_row_division*2));
+		int minutes = 10;
+		int houres = 8;
+		for (int i = 0; i < 12; i++) {
+			inflater = ((Activity)context).getLayoutInflater();
+			timeLayout = inflater.inflate(R.layout.day_side, null);
+			TextView name = (TextView) timeLayout.findViewById(R.id.day_name);
+			String time = Integer.toString(houres) + ": " +  Integer.toString(minutes);
+			name.setText(time);
+			minutes += 60;
+			if (minutes >= 60) {
+				houres++;
+				minutes-=60;
+			}
+			times.addView(timeLayout, new LayoutParams((width/width_row_division), height/side_row_division*2));
+		}
+		return times;
+	}
+	
 	public View getView(Context context){
 		LinearLayout view = new LinearLayout(context);
 		view.setOrientation(LinearLayout.VERTICAL);
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		int height = metrics.heightPixels;
+		int width = metrics.widthPixels;
+		
+		view.addView(sideBarTimes(context,width,height));
+		
 		for (int i = 0; i < 5; i++) {
 			LinearLayout oneDay = new LinearLayout(context);
 			oneDay.setOrientation(LinearLayout.HORIZONTAL);
 			for (int j = 0; j < days.get(i).size(); j++) {
 				if(j != 0){ //odstranenie hodin co zacinaju v rovnakom case
-					if(!days.get(i).get(j).from.equals(days.get(i).get(j-1).from)) oneDay.addView(days.get(i).get(j).getView(context));
+					if(!days.get(i).get(j).from.equals(days.get(i).get(j-1).from)) oneDay.addView(days.get(i).get(j).getView(context)); //dosadzovat tam konstanty widthrow...
 				} else {
-					
-//					oneDay.addView(child, params)
+					oneDay.addView(sideBarDays(context, i), new LayoutParams((width/30), height/6)); // pridanie listy dni nalavo
 					oneDay.addView(days.get(i).get(j).getView(context));
 				}
 			}
