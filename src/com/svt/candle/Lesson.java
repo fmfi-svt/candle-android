@@ -51,10 +51,10 @@ public class Lesson {
 		int width = metrics.widthPixels;
 		if(this.subjectName.equalsIgnoreCase("empty")){
 //			lessonLayout.setLayoutParams(new LayoutParams(width/5, (R.dimen.one_lesson_height*(this.duration/60))));
-			lessonLayout.setLayoutParams(new LayoutParams((width/12*(this.duration/60)), height/5));
+			lessonLayout.setLayoutParams(new LayoutParams(((width/12*this.duration)/60), height/6));
 		}else {
 //			lessonLayout.setLayoutParams(new LayoutParams(width/5, (R.dimen.one_lesson_height*(this.duration))));
-			lessonLayout.setLayoutParams(new LayoutParams((width/12*(this.duration)), height/5));
+			lessonLayout.setLayoutParams(new LayoutParams((width/12*(this.duration)), height/6));
 		}
 		
 		

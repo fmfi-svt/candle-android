@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 public class SortedTimeTable {
 	
-	final int startLearning = 490; 
+	final int startLearning = 480; 
 	final int endLearning = 1200;
 	TimeTable basicTimeTable = null;
 	
@@ -71,7 +71,7 @@ public class SortedTimeTable {
 					listEmptyLessons.add(new Lesson("", Integer.toString(startLearning), list.get(0).from, (Integer.parseInt(list.get(0).from) - startLearning), "", "", "empty", ""));
 				}
 				if(Integer.parseInt(list.get(list.size()-1).to) < endLearning){
-					listEmptyLessons.add(new Lesson("", list.get(list.size()-1).to, Integer.toString(endLearning), (endLearning - Integer.parseInt(list.get(list.size()-1).from)), "", "", "empty", ""));
+					listEmptyLessons.add(new Lesson("", list.get(list.size()-1).to, Integer.toString(endLearning), (endLearning - Integer.parseInt(list.get(list.size()-1).to)), "", "", "empty", ""));
 				}
 			}
 		} catch(Exception e){
@@ -128,11 +128,16 @@ public class SortedTimeTable {
 			LinearLayout oneDay = new LinearLayout(context);
 			oneDay.setOrientation(LinearLayout.HORIZONTAL);
 			for (int j = 0; j < days.get(i).size(); j++) {
-				oneDay.addView(days.get(i).get(j).getView(context));
+				if(j != 0){ //odstranenie hodin co zacinaju v rovnakom case
+					if(!days.get(i).get(j).from.equals(days.get(i).get(j-1).from)) oneDay.addView(days.get(i).get(j).getView(context));
+				} else {
+					
+//					oneDay.addView(child, params)
+					oneDay.addView(days.get(i).get(j).getView(context));
+				}
 			}
 			view.addView(oneDay);
 		}
-		
 		return view;
 	}
 	

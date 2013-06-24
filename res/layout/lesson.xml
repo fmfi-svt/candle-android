@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/one_lesson_width"
-    android:layout_height="@dimen/one_lesson_height"
     android:orientation="vertical" 
     android:background="@color/white">
 
